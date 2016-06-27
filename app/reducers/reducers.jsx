@@ -1,9 +1,12 @@
 //EXPORT REDUCERS - LINK UP IN THE STORE
 
-export var searchTextReducer = (state_search_text = '',action) => {
+export var authReducer = (state_auth = {},action) => {
   switch (action.type) {
-    case 'SET_SEARCH_TEXT':
-      return action.searchText;
+
+    case 'LOGIN':
+      return {
+        uid: action.uid
+      };
 
     default:
       return state_search_text;

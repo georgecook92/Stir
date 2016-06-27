@@ -4,12 +4,12 @@
 
 //AND FUNCTION asynchronous
 
-
-export var setSearchText = (searchText) => {
+//sync redux store
+export var login = (uid) => {
   return {
-    type: 'SET_SEARCH_TEXT',
-    searchText
-  }
+    type: 'LOGIN',
+    uid
+  };
 };
 
 export var startAddTodo = (text) => {
