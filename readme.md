@@ -1,1 +1,1 @@
-React Boilerpate
+Stir Application 
