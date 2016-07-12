@@ -11,7 +11,7 @@ var store = require('configureStore').configure();
 import router from 'app/router/';
 
 //load foundation-sites - uses loaders also
-$(document).foundation();
+//$(document).foundation();
 
 //app.css
 require('style!css!sass!applicationStyles');

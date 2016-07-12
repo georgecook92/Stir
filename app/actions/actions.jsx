@@ -1,5 +1,7 @@
 //EXAMPLES
 
+var axios = require('axios');
+
 //Object - synchronous
 
 //AND FUNCTION asynchronous
@@ -10,6 +12,12 @@ export var login = (uid) => {
     type: 'LOGIN',
     uid
   };
+};
+
+export var startRegister = (username, password) => {
+  return (dispatch, getState) => {
+    
+  }
 };
 
 export var startAddTodo = (text) => {
