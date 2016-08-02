@@ -223,10 +223,10 @@ self.addEventListener('push', function(event) {
 
 self.addEventListener('sync', function(event) {
   if (event.tag == 'send_post') {
-    const URL 
+    //const URL
     console.log('sync from SW - send post');
     event.waitUntil(
-      fetch(  )
+    //  fetch(  )
     );
   }
 });
