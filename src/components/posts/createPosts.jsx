@@ -9,19 +9,20 @@ class CreatePosts extends Component {
   handleFormSubmit(formProps) {
     //call action creator to sign up user
 
+    this.props.sendPost(formProps);
 
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-      navigator.serviceWorker.ready.then(function(reg) {
-        return reg.sync.register('send_post');
-      }).catch(function() {
-        // system was unable to register for a sync,
-        // this could be an OS-level restriction
-        this.props.sendPost(formProps);
-      });
-    } else {
-      // serviceworker/sync not supported
-      this.props.sendPost(formProps);
-    }
+    // if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    //   navigator.serviceWorker.ready.then(function(reg) {
+    //     return reg.sync.register('send_post');
+    //   }).catch(function() {
+    //     // system was unable to register for a sync,
+    //     // this could be an OS-level restriction
+    //     this.props.sendPost(formProps);
+    //   });
+    // } else {
+    //   // serviceworker/sync not supported
+    //   this.props.sendPost(formProps);
+    // }
 
   }
 
