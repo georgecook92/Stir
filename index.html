@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/tether.min.css">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <link rel="manifest" href="/manifest.json">
+
+  </head>
+  <body>
+    <script src='/assets/pouchdb-5.4.5.min.js'></script>
+    <div class="container"></div>
+  </body>
+  <script src="/bundle.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+        console.log('Service Worker is supported');
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+            console.log(':^)', reg);
+            // reg.pushManager.subscribe({
+            //     userVisibleOnly: true
+            // }).then(function(sub) {
+            //     console.log('endpoint:', sub.endpoint);
+            // });
+        }).catch(function(err) {
+            console.log(':^(', err);
+        });
+    }
+
+
+
+</script>
+<script src='/node_modules/jquery/dist/jquery.min.js'></script>
+<script src='/js/tether.min.js'></script>
+<script src='/bootstrap/dist/js/bootstrap.min.js'></script>
+</html>
