@@ -1,4 +1,7 @@
 {
   "name": "Stir",
+  "short_name": "Stir",
+  "start_url": "/",
+  "display": "standalone",
   "gcm_sender_id": "694960784598"
 }
