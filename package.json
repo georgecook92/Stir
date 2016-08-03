@@ -28,6 +28,7 @@
     "babel-preset-react": "^6.1.18",
     "babel-preset-stage-1": "^6.1.18",
     "bootstrap-toggle": "^2.2.2",
+    "cors": "^2.7.1",
     "dexie": "^1.4.1",
     "express": "^4.14.0",
     "jquery": "^2.2.4",
