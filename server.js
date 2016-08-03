@@ -12,11 +12,14 @@ const forceSsl = function (req, res, next) {
 
 app.use( express.static(__dirname) );
 
-app.configure(function () {
-    app.use(forceSsl);
-});
+
 
 app.get('*', (req,res) => {
+
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+
   res.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
