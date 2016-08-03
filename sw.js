@@ -73,7 +73,7 @@ function sendAllFromOutbox(posts) {
     } )
     .catch( (err) => {
       console.log('error from SW sendAllFromOutbox',err);
-      //reject;
+      reject;
     } )
   } );
 }
@@ -172,6 +172,9 @@ self.addEventListener( 'fetch', (event) => {
         return databaseGet('posts')
       } ).then( function(posts) {
        console.log('posts from IDB', posts);
+       return new Response( JSON.stringify(posts), {
+         headers: {'Content-Type': 'application/json'}
+       });
 
        return fetch(event.request).then( function(response) {
          return response;
