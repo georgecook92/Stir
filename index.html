@@ -15,11 +15,11 @@
         enable: true /* Set to false to hide */
       }
     }]);
+
   </script>
 
   </head>
   <body>
-    <script src='/assets/pouchdb-5.4.5.min.js'></script>
     <div class="container"></div>
   </body>
   <script src="/bundle.js"></script>
@@ -44,4 +44,20 @@
 <script src='/node_modules/jquery/dist/jquery.min.js'></script>
 <script src='/js/tether.min.js'></script>
 <script src='/bootstrap/dist/js/bootstrap.min.js'></script>
+
+<script>
+OneSignal.push(function() {
+  OneSignal.on('subscriptionChange', function(isSubscribed) {
+    if (isSubscribed) {
+      // The user is subscribed
+      //   Either the user subscribed for the first time
+      //   Or the user was subscribed -> unsubscribed -> subscribed
+      OneSignal.getUserId( function(userId) {
+        // Make a POST call to your server with the user ID
+        console.log('user_id:',user_id);
+      });
+    }
+  });
+});
+</script>
 </html>

@@ -6,6 +6,39 @@ var Dexie = require('dexie');
 
 const ROOT_URL = 'https://stirapi.herokuapp.com';
 
+var sendNotification = function(message) {
+  var headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Basic ZGE1YTJmOWItOTk3My00Y2IzLWI3YzEtODQzMDJiZGZhN2Nh"
+  };
+
+  var options = {
+    host: "onesignal.com",
+    port: 443,
+    path: "/api/v1/notifications",
+    method: "POST",
+    headers: headers
+  };
+
+  var https = require('https');
+  var req = https.request(options, function(res) {
+    res.on('data', function(data) {
+      console.log("Response:");
+      console.log(JSON.parse(data));
+    });
+  });
+
+  req.on('error', function(e) {
+    console.log("ERROR:");
+    console.log(e);
+  });
+
+  req.write(JSON.stringify(data));
+  req.end();
+};
+
+
+
 export var toggleOffline = (post_id,offlineStatus) => {
   return function(dispatch) {
     axios.put(`${ROOT_URL}/changeOfflineStatus`, {post_id,offlineStatus})
@@ -146,6 +179,14 @@ export function signupUser({email,password,firstName,lastName}) {
           lastName: response.data.lastName,
           token: response.data.token
       	});
+
+        var message = {
+          app_id: '04954d84-8b33-4124-98cb-ac53f5abcf1d',
+          contents: {"en": "Recipe has been created"},
+          included_segments: ["All"]
+        };
+
+        sendNotification(message);
 
         localStorage.setItem('token', response.data.token);
 
