@@ -6,7 +6,7 @@ var Dexie = require('dexie');
 
 const ROOT_URL = 'https://stirapi.herokuapp.com';
 
-var sendNotification = function(message) {
+var sendNotification = function(data) {
   var headers = {
     "Content-Type": "application/json",
     "Authorization": "Basic ZGE1YTJmOWItOTk3My00Y2IzLWI3YzEtODQzMDJiZGZhN2Nh"
@@ -309,13 +309,14 @@ export function sendPost({title,text}) {
           } )
           .then( response => {
             console.log('response',response);
-            // var message = {
-            //   app_id: '04954d84-8b33-4124-98cb-ac53f5abcf1d',
-            //   contents: {"en": "Recipe has been created"},
-            //   include_player_ids: ['f30be904-34c2-4d5d-8cc0-942806715c98']
-            // };
-            //
-            // sendNotification(message);
+            var message = {
+              app_id: '04954d84-8b33-4124-98cb-ac53f5abcf1d',
+              contents: {"en": "Recipe has been created"},
+              headings: { "en" : "Stir Notification" },
+              include_player_ids: ['f30be904-34c2-4d5d-8cc0-942806715c98']
+            };
+
+            sendNotification(message);
 
             browserHistory.push('/posts/view');
           })
