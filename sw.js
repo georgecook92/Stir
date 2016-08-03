@@ -17,10 +17,10 @@ var CACHE_NAME = 'v2';
 
 var db;
 
-function openDatabase() {
+function openDatabase(name) {
   return new Promise(function(resolve, reject) {
     var version = 10;
-    var request = indexedDB.open('Posts', version);
+    var request = indexedDB.open(name, version);
     request.onupgradeneeded = function(e) {
       db = e.target.result;
       e.target.transaction.onerror = reject;
@@ -60,9 +60,21 @@ function databaseGetById(type, id) {
   });
 }
 
-function sendAllFromOutbox() {
+function sendAllFromOutbox(posts) {
   return new Promise( function(resolve,reject) {
-
+    return fetch('https://stirapi.herokuapp.com/sendPost', {
+      headers: {'Content-Type': 'application/json'},
+      method: "POST",
+      body: JSON.stringify(posts)
+    })
+    .then( (response) => {
+      resolve;
+      console.log('response from SW sendAllFromOutbox', response);
+    } )
+    .catch( (err) => {
+      console.log('error from SW sendAllFromOutbox',err);
+      //reject;
+    } )
   } );
 }
 
@@ -156,7 +168,7 @@ self.addEventListener( 'fetch', (event) => {
 
     event.respondWith(
 
-      openDatabase().then( function() {
+      openDatabase('Posts').then( function() {
         return databaseGet('posts')
       } ).then( function(posts) {
        console.log('posts from IDB', posts);
@@ -223,24 +235,17 @@ self.addEventListener( 'fetch', (event) => {
   }
 } );
 
-
-//testing
-self.addEventListener('push', function(event) {
-  console.log('Push message', event);
-  var title = 'Push Notification';
-  event.waitUntil(
-    self.registration.showNotification(title, {
-      body: 'The Message',
-      tag: 'my-tag'
-    }));
-});
-
 self.addEventListener('sync', function(event) {
   if (event.tag == 'send_post') {
     //const URL
     console.log('sync from SW - send post');
     event.waitUntil(
-      //sendAllFromOutbox()
+      openDatabase('Outbox').then( () => {
+        return databaseGet('posts').then( (posts) => {
+          return sendAllFromOutbox(posts)
+        } )
+      } )
+
     );
   }
 });

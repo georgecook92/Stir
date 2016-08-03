@@ -6,39 +6,6 @@ var Dexie = require('dexie');
 
 const ROOT_URL = 'https://stirapi.herokuapp.com';
 
-var sendNotification = function(data) {
-  var headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Basic ZGE1YTJmOWItOTk3My00Y2IzLWI3YzEtODQzMDJiZGZhN2Nh"
-  };
-
-  var options = {
-    host: "onesignal.com",
-    port: 443,
-    path: "/api/v1/notifications",
-    method: "POST",
-    headers: headers
-  };
-
-  var https = require('https');
-  var req = https.request(options, function(res) {
-    res.on('data', function(data) {
-      console.log("Response:");
-      console.log(JSON.parse(data));
-    });
-  });
-
-  req.on('error', function(e) {
-    console.log("ERROR:");
-    console.log(e);
-  });
-
-  req.write(JSON.stringify(data));
-  req.end();
-};
-
-
-
 export var toggleOffline = (post_id,offlineStatus) => {
   return function(dispatch) {
     axios.put(`${ROOT_URL}/changeOfflineStatus`, {post_id,offlineStatus})
@@ -59,15 +26,26 @@ export var toggleOffline = (post_id,offlineStatus) => {
           } );
         } else {
           response.data.forEach( (post) => {
+
             if (post.offline) {
-              db.posts.add({
-                _id: post._id,
-                title: post.title,
-                user_id: post.user_id,
-                text: post.text,
-                offline: post.offline
-              });
+
+              db.posts.get(post._id).then( (result) => {
+                if (result) {
+                  //console.log('Post is already in db', post.title);
+                } else {
+                  //console.log('Post not in db', post.title);
+                  db.posts.add({
+                    _id: post._id,
+                    title: post.title,
+                    user_id: post.user_id,
+                    text: post.text,
+                    offline: post.offline
+                  });
+                }
+              } )
+
             }
+
           } );
         }
 
@@ -218,13 +196,22 @@ export function getUserPosts(user_id, token){
       response.data.forEach( (post) => {
 
         if (post.offline) {
-          db.posts.add({
-            _id: post._id,
-            title: post.title,
-            user_id: post.user_id,
-            text: post.text,
-            offline: post.offline
-          });
+
+          db.posts.get(post._id).then( (result) => {
+            if (result) {
+              //console.log('Post is already in db', post.title);
+            } else {
+              //console.log('Post not in db', post.title);
+              db.posts.add({
+                _id: post._id,
+                title: post.title,
+                user_id: post.user_id,
+                text: post.text,
+                offline: post.offline
+              });
+            }
+          } )
+
         }
       } );
 
@@ -309,14 +296,7 @@ export function sendPost({title,text}) {
           } )
           .then( response => {
             console.log('response',response);
-            var message = {
-              app_id: '04954d84-8b33-4124-98cb-ac53f5abcf1d',
-              contents: {"en": "Recipe has been created"},
-              headings: { "en" : "Stir Notification" },
-              include_player_ids: ['f30be904-34c2-4d5d-8cc0-942806715c98']
-            };
 
-            sendNotification(message);
 
             browserHistory.push('/posts/view');
           })
@@ -327,6 +307,23 @@ export function sendPost({title,text}) {
 
               if ('serviceWorker' in navigator && 'SyncManager' in window) {
                 navigator.serviceWorker.ready.then(function(reg) {
+
+                  var db = new Dexie('Outbox');
+                  db.version(1).stores({
+                    posts: '++id, title, user_id, text, offline'
+                  });
+
+                  db.posts.add({
+                    title,
+                    user_id: doc[0].user_id,
+                    text,
+                    offline: false
+                  }).then( (doc) => {
+                    console.log('outbox doc', doc);
+                  } ).catch( (err) => {
+                    console.log(err);
+                  } )
+
                   return reg.sync.register('send_post');
                 }).catch(function() {
                   // system was unable to register for a sync,
@@ -396,35 +393,6 @@ export function signoutUser(user_id) {
 
     dispatch({type: UNAUTH_USER});
   }
-}
-
-export function fetchMessage() {
-  return function(dispatch) {
-    axios.get(ROOT_URL, {
-      headers: {authorisation: localStorage.getItem('token')}
-    })
-      .then( response => {
-        console.log(response.data.message);
-        dispatch({
-          type: FETCH_MESSAGE,
-          payload: response.data.message
-        });
-      } );
-
-  }
-}
-
-export function fetchMessagePromise() {
-  const request = axios.get(ROOT_URL, {
-    headers: {authorisation: localStorage.getItem('token')}
-  });
-
-  console.log(request);
-
-  return {
-    type: FETCH_MESSAGE,
-    payload: request
-  };
 }
 
 export function removeSelectedRecipe() {
