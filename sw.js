@@ -60,6 +60,12 @@ function databaseGetById(type, id) {
   });
 }
 
+function sendAllFromOutbox() {
+  return new Promise( function(resolve,reject) {
+
+  } );
+}
+
 //install event
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -100,7 +106,7 @@ var getStaleWhileRevalidate = function (request, cache) {
 //fetch event
 self.addEventListener( 'fetch', (event) => {
 
-  console.log('[ServiceWorker] Fetch event', event.request);
+  //console.log('[ServiceWorker] Fetch event', event.request);
 
    var requestURL = new URL(event.request.url);
 
@@ -179,24 +185,32 @@ self.addEventListener( 'fetch', (event) => {
 
     event.respondWith(
 
-      databaseGetById('posts', param)
-        .then( (post) => {
-          if (post) {
-            post = [post];
-            console.log(post);
-            return new Response( JSON.stringify(post), {
-              headers: {'Content-Type': 'application/json'}
-            } );
-          } else {
-            return fetch(event.request).then( (response) => {
-              console.log('response came from new IDB else', response);
-              return response;
-            })
-            .catch( (err) => {
-              console.log('err from IDB else', err);
-            } );
-          }
-        } )
+      caches.match(event.request).then( (response) => {
+        if (response) {
+          return response;
+        } else {
+          return databaseGetById('posts', param)
+            .then( (post) => {
+              if (post) {
+                post = [post];
+                console.log(post);
+                return new Response( JSON.stringify(post), {
+                  headers: {'Content-Type': 'application/json'}
+                } );
+              } else {
+                return fetch(event.request).then( (response) => {
+                  console.log('response came from new IDB else', response);
+                  return response;
+                })
+                .catch( (err) => {
+                  console.log('err from IDB else', err);
+                } );
+              }
+            } )
+        }
+      } )
+
+
     );
   }
 
@@ -226,7 +240,7 @@ self.addEventListener('sync', function(event) {
     //const URL
     console.log('sync from SW - send post');
     event.waitUntil(
-    //  fetch(  )
+      //sendAllFromOutbox()
     );
   }
 });

@@ -7,18 +7,14 @@ import SearchAPI from '../../../searchAPI';
 
 class ViewPosts extends Component {
 
-
   componentDidMount() {
     const {user_id,token} = this.props.auth;
-
     this.props.getUserPosts(user_id, token);
   }
-
 
   componentWillUnmount() {
     this.props.removeAuthError();
   }
-
 
   buttonClick(post_id,newOfflineStatus) {
     console.log(newOfflineStatus);
@@ -43,9 +39,7 @@ class ViewPosts extends Component {
               <Link to={`/posts/view/${post._id}`}>
                 <strong>{post.title}</strong>
               </Link>
-
               <button className='btn btn-success pull-xs-right btn-sm' onClick={ () => this.buttonClick(post._id, !post.offline)}>Available Offline</button>
-
             </li>
           );
         }
@@ -54,10 +48,7 @@ class ViewPosts extends Component {
             <Link to={`/posts/view/${post._id}`}>
               <strong>{post.title}</strong>
             </Link>
-
             <button className='btn btn-danger pull-xs-right btn-sm' onClick={ () => this.buttonClick(post._id, !post.offline)}>Not Available Offline</button>
-
-
           </li>
         );
     } );

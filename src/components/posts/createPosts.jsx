@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {reduxForm} from 'redux-form';
 import * as actions from '../../actions';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+var Dexie = require('dexie');
 
 class CreatePosts extends Component {
 
@@ -11,6 +12,16 @@ class CreatePosts extends Component {
 
     this.props.sendPost(formProps);
 
+    // var db = new Dexie('Outbox');
+    // db.version(1).stores({
+    //   posts: '_id, title, user_id, text, offline'
+    // });
+    //
+    // // Open the database
+    // db.open().catch(function(error) {
+    //   alert('Uh oh : ' + error);
+    // });
+    //
     // if ('serviceWorker' in navigator && 'SyncManager' in window) {
     //   navigator.serviceWorker.ready.then(function(reg) {
     //     return reg.sync.register('send_post');

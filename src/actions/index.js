@@ -282,7 +282,23 @@ export function sendPost({title,text}) {
           .catch( err => {
             console.log('error from send posts action', err);
             if (err.response.status === 503) {
-              dispatch(authError('No internet connection :( '));
+              dispatch(authError('You\'re Offline! Your recipe will be sent in the background once you come back online!'));
+
+              if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                navigator.serviceWorker.ready.then(function(reg) {
+                  return reg.sync.register('send_post');
+                }).catch(function() {
+                  // system was unable to register for a sync,
+                  // this could be an OS-level restriction
+                  dispatch(removeAuthError());
+                  dispatch(authError('You\'re Offline! But syncing in the background is not available.!'));
+                });
+              } else {
+                // serviceworker/sync not supported
+                dispatch(removeAuthError());
+                dispatch(authError('You\'re Offline! But syncing in the background is not available.!'));
+              }
+
             } else {
               dispatch(authError(err.response.data.error));
             }
