@@ -172,9 +172,6 @@ self.addEventListener( 'fetch', (event) => {
         return databaseGet('posts')
       } ).then( function(posts) {
        console.log('posts from IDB', posts);
-       return new Response( JSON.stringify(posts), {
-         headers: {'Content-Type': 'application/json'}
-       });
 
        return fetch(event.request).then( function(response) {
          return response;
@@ -226,6 +223,16 @@ self.addEventListener( 'fetch', (event) => {
       } )
 
 
+    );
+  }
+
+  else if(event.request.url === 'https://cdn.onesignal.com/sdks/OneSignalSDK.js') {
+    event.respondWith(
+      fetch(event.request).then( (response) => {
+        return response;
+      } ).catch( (err) => {
+        console.log(err);
+      } )
     );
   }
 

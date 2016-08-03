@@ -16,6 +16,8 @@
       }
     }]);
 
+  //  localStorage.setItem('test','test');
+
   </script>
 
   </head>
@@ -28,11 +30,7 @@
         console.log('Service Worker is supported');
         navigator.serviceWorker.register('/sw.js').then(function(reg) {
             console.log(':^)', reg);
-            // reg.pushManager.subscribe({
-            //     userVisibleOnly: true
-            // }).then(function(sub) {
-            //     console.log('endpoint:', sub.endpoint);
-            // });
+
         }).catch(function(err) {
             console.log(':^(', err);
         });
@@ -55,6 +53,7 @@ OneSignal.push(function() {
       OneSignal.getUserId( function(userId) {
         // Make a POST call to your server with the user ID
         console.log('user_id:',userId);
+        localStorage.setItem('userPushId', userId);
       });
     }
   });
