@@ -309,13 +309,13 @@ export function sendPost({title,text}) {
           } )
           .then( response => {
             console.log('response',response);
-            var message = {
-              app_id: '04954d84-8b33-4124-98cb-ac53f5abcf1d',
-              contents: {"en": "Recipe has been created"},
-              include_player_ids: ['f30be904-34c2-4d5d-8cc0-942806715c98']
-            };
-
-            sendNotification(message);
+            // var message = {
+            //   app_id: '04954d84-8b33-4124-98cb-ac53f5abcf1d',
+            //   contents: {"en": "Recipe has been created"},
+            //   include_player_ids: ['f30be904-34c2-4d5d-8cc0-942806715c98']
+            // };
+            //
+            // sendNotification(message);
 
             browserHistory.push('/posts/view');
           })
