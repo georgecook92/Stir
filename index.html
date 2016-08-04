@@ -53,6 +53,8 @@ OneSignal.push(function() {
         console.log('user_id:',userId);
         localStorage.setItem('userPushId', userId);
       });
+    } else {
+      localStorage.removeItem('userPushId');
     }
   });
 });

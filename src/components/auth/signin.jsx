@@ -6,7 +6,11 @@ class Signin extends Component {
 
   handleFormSubmit({email,password}) {
     //action to log user in
-    this.props.signinUser({email,password});
+
+    const userPushId = localStorage.getItem('userPushId') || '' ;
+
+
+    this.props.signinUser({email,password}, userPushId);
   }
 
   renderAlert() {

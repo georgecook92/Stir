@@ -61,21 +61,17 @@ function databaseGetById(type, id) {
 }
 
 function sendAllFromOutbox(posts) {
-  return new Promise( function(resolve,reject) {
-    return fetch('https://stirapi.herokuapp.com/sendPost', {
-      headers: {'Content-Type': 'application/json'},
-      method: "POST",
-      body: JSON.stringify(posts)
-    })
-    .then( (response) => {
-      resolve;
-      console.log('response from SW sendAllFromOutbox', response);
-    } )
-    .catch( (err) => {
-      console.log('error from SW sendAllFromOutbox',err);
-      reject;
-    } )
-  } );
+  return fetch('https://stirapi.herokuapp.com/sendPost', {
+    headers: {'Content-Type': 'application/json'},
+    method: "POST",
+    body: JSON.stringify(posts)
+  })
+  .then( (response) => {
+    console.log('response from SW sendAllFromOutbox', response);
+  } )
+  .catch( (err) => {
+    console.log('error from SW sendAllFromOutbox',err);
+  } )
 }
 
 //install event
