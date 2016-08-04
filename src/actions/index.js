@@ -226,11 +226,7 @@ export function getUserPosts(user_id, token){
     })
       .catch( (err) => {
         console.log('error from get posts action', err);
-        if (err.response.status === 503) {
-          dispatch(authError('No internet connection :(. Check out your offline posts page. '));
-        } else {
-          dispatch(authError(err.response.data.error));
-        }
+        dispatch(authError(err.response.data.error));
       });
   }
 

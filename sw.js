@@ -15,12 +15,11 @@ var CACHE_ARRAY = [
 
 var CACHE_NAME = 'v2';
 
-var db;
-
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {
     var version = 10;
     var request = indexedDB.open(name, version);
+    var db;
     request.onupgradeneeded = function(e) {
       db = e.target.result;
       e.target.transaction.onerror = reject;
@@ -28,13 +27,13 @@ function openDatabase(name) {
     request.onsuccess = function(e) {
       db = e.target.result;
       console.log('OPENED DATABASE');
-      resolve();
+      resolve(db);
     };
     request.onerror = reject;
   });
 }
 
-function databaseGet(type) {
+function databaseGet(type,db) {
   return new Promise(function(resolve, reject) {
     var transaction = db.transaction([type], 'readonly');
     var store = transaction.objectStore(type);
@@ -47,7 +46,7 @@ function databaseGet(type) {
   });
 }
 
-function databaseGetById(type, id) {
+function databaseGetById(type, id, db) {
   return new Promise(function(resolve, reject) {
     var transaction = db.transaction([type], 'readonly');
     var store = transaction.objectStore(type);
@@ -164,8 +163,8 @@ self.addEventListener( 'fetch', (event) => {
 
     event.respondWith(
 
-      openDatabase('Posts').then( function() {
-        return databaseGet('posts')
+      openDatabase('Posts').then( function(db) {
+        return databaseGet('posts',db)
       } ).then( function(posts) {
        console.log('posts from IDB', posts);
 
@@ -197,24 +196,26 @@ self.addEventListener( 'fetch', (event) => {
         if (response) {
           return response;
         } else {
-          return databaseGetById('posts', param)
-            .then( (post) => {
-              if (post) {
-                post = [post];
-                console.log(post);
-                return new Response( JSON.stringify(post), {
-                  headers: {'Content-Type': 'application/json'}
-                } );
-              } else {
-                return fetch(event.request).then( (response) => {
-                  console.log('response came from new IDB else', response);
-                  return response;
-                })
-                .catch( (err) => {
-                  console.log('err from IDB else', err);
-                } );
-              }
-            } )
+          return openDatabase( 'Posts' ).then( (db) => {
+            return databaseGetById('posts', param, db)
+              .then( (post) => {
+                if (post) {
+                  post = [post];
+                  console.log(post);
+                  return new Response( JSON.stringify(post), {
+                    headers: {'Content-Type': 'application/json'}
+                  } );
+                } else {
+                  return fetch(event.request).then( (response) => {
+                    console.log('response came from new IDB else', response);
+                    return response;
+                  })
+                  .catch( (err) => {
+                    console.log('err from IDB else', err);
+                  } );
+                }
+              } )
+          } )
         }
       } )
 
@@ -246,8 +247,9 @@ self.addEventListener('sync', function(event) {
     //const URL
     console.log('sync from SW - send post');
     event.waitUntil(
-      openDatabase('Outbox').then( () => {
-        return databaseGet('posts').then( (posts) => {
+      openDatabase('Outbox').then( (db) => {
+        return databaseGet('posts', db).then( (posts) => {
+          console.log('result from get:',posts);
           return sendAllFromOutbox(posts)
         } )
       } )

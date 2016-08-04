@@ -10,6 +10,10 @@ class Signin extends Component {
     this.props.signinUser({email,password});
   }
 
+  componentWillUnmount() {
+    this.props.removeAuthError();
+  }
+
   renderAlert() {
     if (this.props.errorMessage) {
       return (

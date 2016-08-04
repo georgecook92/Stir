@@ -29,6 +29,12 @@ class ViewPosts extends Component {
     } else {
       const {searchText} = this.props;
 
+      if (this.props.allPosts.length === 0) {
+        return (
+          <div className='alert alert-warning'>You have no recipes to view :(</div>
+        );
+      }
+
       var filteredRecipes = SearchAPI.filterRecipes(this.props.allPosts, searchText);
 
       return filteredRecipes.map( (post) => {

@@ -10,6 +10,10 @@ class Signup extends Component {
 
   }
 
+  componentWillUnmount() {
+    this.props.removeAuthError();
+  }
+
   renderAlert() {
     if (this.props.errorMessage) {
       return (
