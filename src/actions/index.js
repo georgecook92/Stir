@@ -75,7 +75,7 @@ export function signinUser({email,password}) {
 
     //submit email/password to server
     //{email,password} es6 shortcut
-    axios.post(`${ROOT_URL}/signin`, { email,password, userPushId })
+    axios.post(`${ROOT_URL}/signin`, { email,password })
       .then( response => {
         console.log('data from request: ' , response.data);
         //if request is good,
@@ -86,7 +86,6 @@ export function signinUser({email,password}) {
           payload: response.data
         });
 
-        var userPushId = '';
         var db = new Dexie('Users');
         db.version(1).stores({
       		users: 'user_id, email, firstName, lastName, token'
@@ -97,29 +96,14 @@ export function signinUser({email,password}) {
       		alert('Uh oh : ' + error);
       	});
 
-        if (localStorage.getItem('userPushId')) {
-          userPushId = localStorage.getItem('userPushId');
-
-          //IDB add
-        	db.users.add({
-        		user_id: response.data.user_id,
-        		email: response.data.email,
-            firstName: response.data.forename,
-            lastName: response.data.surname,
-            token: response.data.token,
-            userPushId: userPushId
-        	});
-
-        } else {
-          //IDB add - but no userPushId
-        	db.users.add({
-        		user_id: response.data.user_id,
-        		email: response.data.email,
-            firstName: response.data.forename,
-            lastName: response.data.surname,
-            token: response.data.token
-        	});
-        }
+        //IDB add
+      	db.users.add({
+      		user_id: response.data.user_id,
+      		email: response.data.email,
+          firstName: response.data.forename,
+          lastName: response.data.surname,
+          token: response.data.token
+      	});
 
         //--save JWT token
         localStorage.setItem('token', response.data.token);
@@ -153,14 +137,11 @@ export function signupUser({email,password,firstName,lastName}) {
         dispatch({type: SAVE_USER, payload: response.data});
         console.log(response.data);
 
-        var userPushId = '';
         var db = new Dexie('Users');
-
-
 
         // Define a schema
       	db.version(1).stores({
-      		users: 'user_id, email, firstName, lastName, token, userPushId'
+      		users: 'user_id, email, firstName, lastName, token'
       	});
 
         // Open the database
@@ -168,26 +149,15 @@ export function signupUser({email,password,firstName,lastName}) {
       		alert('Uh oh : ' + error);
       	});
 
-        if (localStorage.getItem('userPushId')) {
-          userPushId = localStorage.getItem('userPushId');
-          //IDB add
-        	db.users.add({
-        		user_id: response.data.user_id,
-        		email: response.data.email,
-            firstName: response.data.firstName,
-            lastName: response.data.lastName,
-            token: response.data.token,
-            userPushId: userPushId
-        	});
-        } else {
-          db.users.add({
-        		user_id: response.data.user_id,
-        		email: response.data.email,
-            firstName: response.data.firstName,
-            lastName: response.data.lastName,
-            token: response.data.token
-        	});
-        }
+
+        db.users.add({
+      		user_id: response.data.user_id,
+      		email: response.data.email,
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          token: response.data.token
+      	});
+
 
         localStorage.setItem('token', response.data.token);
 
