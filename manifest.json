@@ -3,5 +3,12 @@
   "short_name": "Stir",
   "start_url": "/",
   "display": "standalone",
-  "gcm_sender_id": "694960784598"
+  "gcm_sender_id": "694960784598",
+  "icons": [
+    {
+      "src": "assets/pushLogo.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
 }
