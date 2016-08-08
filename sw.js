@@ -1,6 +1,3 @@
-//api key AIzaSyBKXFjFCRA7qKltu1Oa0oKdMQQJCwzghQc
-//number 694960784598
-
 // cached items
 var CACHE_ARRAY = [
   '/',

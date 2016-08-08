@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {reduxForm} from 'redux-form';
 import * as actions from '../../actions';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
 var Dexie = require('dexie');
 
 class CreatePosts extends Component {
