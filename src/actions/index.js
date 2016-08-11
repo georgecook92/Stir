@@ -187,7 +187,11 @@ export function getUserPosts(user_id, token){
       }
     }).then( (response) => {
       console.log('response from getPosts action ', response);
-      dispatch( {type: GET_POSTS, payload: response.data} );
+
+      if (response.data.length > 0) {
+        dispatch( {type: GET_POSTS, payload: response.data} );
+      }
+
 
       response.data.forEach( (post) => {
 
