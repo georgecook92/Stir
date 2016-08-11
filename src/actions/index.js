@@ -267,6 +267,10 @@ export function deletePost(post_id) {
 export function sendPost({title,text}) {
   return function(dispatch) {
 
+    var user_push_id = localStorage.getItem('userPushId');
+
+    console.log('PUSH ID: ', user_push_id);
+
     var db = new Dexie('Users');
     db.version(1).stores({
       users: 'user_id, email, firstName, lastName, token'
@@ -276,6 +280,10 @@ export function sendPost({title,text}) {
     db.open().catch(function(error) {
       alert('Uh oh : ' + error);
     });
+
+    if (user_push_id) {
+      console.log('There is a push id!');
+    }
 
     db.users.toArray()
       .then( (doc) => {
