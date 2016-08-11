@@ -269,7 +269,7 @@ export function sendPost({title,text}) {
 
     var user_push_id = localStorage.getItem('userPushId');
 
-    console.log('PUSH ID: ', user_push_id);
+    //console.log('PUSH ID: ', user_push_id);
 
     var db = new Dexie('Users');
     db.version(1).stores({
@@ -281,9 +281,9 @@ export function sendPost({title,text}) {
       alert('Uh oh : ' + error);
     });
 
-    if (user_push_id) {
-      console.log('There is a push id!');
-    }
+    // if (user_push_id) {
+    //   console.log('There is a push id!');
+    // }
 
     db.users.toArray()
       .then( (doc) => {
@@ -293,7 +293,8 @@ export function sendPost({title,text}) {
           title,
           user_id: doc[0].user_id,
           text,
-          offline: false
+          offline: false,
+          user_push_id: user_push_id
           },
           {
             headers: {
