@@ -158,12 +158,13 @@ self.addEventListener( 'fetch', (event) => {
 
   else if (event.request.url.indexOf('https://stirapi.herokuapp.com/getPosts?user_id') > -1) {
 
+    var resObj = [{title:"Mac and cheese",_id:"579f6d34a1d8c41100ab70cc",offline:true,user_id:"579b4194cfe5401100c4d315",text:"Lots of cheese. Done."}, {title:"Offline Post",_id:"47999f6d34a1d8c41100bb70cc",offline:true,user_id:"579b4194cfe5401100c4d315",text:"Offline. Done. 2"}];
+
+
+
       event.respondWith(
         fetch(event.request).then( (response) => {
-          if (response.length > 0) {
-            return response;
-          }
-
+          return response;
         } ).catch( (err) => {
           return new Response( { "error": "No Network" } , {
             ok: false,
