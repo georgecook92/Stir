@@ -1,5 +1,4 @@
 import axios from 'axios';
-axios.defaults.headers.common['authorisation'] = localStorage.getItem('token');
 import {browserHistory} from 'react-router';
 import {AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_MESSAGE, SAVE_USER, GET_POSTS, GET_POST, SET_SEARCH_TEXT, REMOVE_AUTH_ERROR, TOGGLE_OFFLINE, REMOVE_SELECTED_RECIPE} from './types';
 var Dexie = require('dexie');
@@ -8,13 +7,19 @@ const ROOT_URL = 'https://stirapi.herokuapp.com';
 
 export var toggleOffline = (post_id,offlineStatus) => {
   return function(dispatch) {
-    axios.put(`${ROOT_URL}/changeOfflineStatus`, {post_id,offlineStatus})
+    axios.put(`${ROOT_URL}/changeOfflineStatus`, {post_id,offlineStatus}, {
+      headers: {
+        authorisation: localStorage.getItem('token')
+      }
+    })
       .then( (response) => {
         console.log('response from toggleOffline action ', response);
         var db = new Dexie('Posts');
         db.version(1).stores({
           posts: '_id, title, user_id, text, offline'
         });
+
+        //delete post from IDB if offline status is false
         if (!offlineStatus) {
           db.open().then( function() {
           return db.posts
@@ -24,28 +29,19 @@ export var toggleOffline = (post_id,offlineStatus) => {
           } ).then( function(doc) {
             console.log('doc',doc);
           } );
+
+          //else add post in to IDB as it is now available offline
         } else {
           response.data.forEach( (post) => {
-
-            if (post.offline) {
-
-              db.posts.get(post._id).then( (result) => {
-                if (result) {
-                  //console.log('Post is already in db', post.title);
-                } else {
-                  //console.log('Post not in db', post.title);
-                  db.posts.add({
-                    _id: post._id,
-                    title: post.title,
-                    user_id: post.user_id,
-                    text: post.text,
-                    offline: post.offline
-                  });
-                }
-              } )
-
+            if (post._id === post_id) {
+              db.posts.add({
+                _id: post._id,
+                title: post.title,
+                user_id: post.user_id,
+                text: post.text,
+                offline: post.offline
+              });
             }
-
           } );
         }
 
@@ -72,7 +68,6 @@ export var setSearchText = (searchText) => {
 //pass in object which contains the below properties
 export function signinUser({email,password}) {
   return function(dispatch) {
-
     //submit email/password to server
     //{email,password} es6 shortcut
     axios.post(`${ROOT_URL}/signin`, { email,password })
@@ -85,17 +80,14 @@ export function signinUser({email,password}) {
           type: SAVE_USER,
           payload: response.data
         });
-
         var db = new Dexie('Users');
         db.version(1).stores({
       		users: 'user_id, email, firstName, lastName, token'
       	});
-
         // Open the database
       	db.open().catch(function(error) {
       		alert('Uh oh : ' + error);
       	});
-
         //IDB add
       	db.users.add({
       		user_id: response.data.user_id,
@@ -104,15 +96,10 @@ export function signinUser({email,password}) {
           lastName: response.data.surname,
           token: response.data.token
       	});
-
         //--save JWT token
         localStorage.setItem('token', response.data.token);
-
         //--redirect to '/posts'
-
         browserHistory.push('/posts/create');
-
-
       } )
       .catch( (err) => {
         //if request is bad
@@ -124,7 +111,6 @@ export function signinUser({email,password}) {
           dispatch(authError('Incorrect Login Information'));
         }
           console.log(err.response.status);
-
       } );
   }
 }
@@ -196,7 +182,9 @@ export function getUserPosts(user_id, token){
     });
 
     axios.get(`${ROOT_URL}/getPosts?user_id=${user_id}`, {
-      headers: {authorisation: token}
+      headers: {
+        authorisation: localStorage.getItem('token')
+      }
     }).then( (response) => {
       console.log('response from getPosts action ', response);
       dispatch( {type: GET_POSTS, payload: response.data} );
@@ -210,6 +198,7 @@ export function getUserPosts(user_id, token){
               //console.log('Post is already in db', post.title);
             } else {
               //console.log('Post not in db', post.title);
+              //useful if a posts offline status has changed
               db.posts.add({
                 _id: post._id,
                 title: post.title,
@@ -226,7 +215,12 @@ export function getUserPosts(user_id, token){
     })
       .catch( (err) => {
         console.log('error from get posts action', err);
-        dispatch(authError(err.response.data.error));
+        if (err.response.status === 503) {
+          dispatch(authError('No internet connection, but you can view your offline posts! '));
+        } else {
+          dispatch(authError(err.response.data.error));
+        }
+
       });
   }
 
@@ -301,13 +295,12 @@ export function sendPost({title,text}) {
           .then( response => {
             console.log('response',response);
 
-
             browserHistory.push('/posts/view');
           })
           .catch( err => {
             console.log('error from send posts action', err);
             if (err.response.status === 503) {
-              dispatch(authError('You\'re Offline! Your recipe will be sent in the background once you come back online!'));
+              dispatch(authError('You\'re Offline! Please try again when you are online!'));
 
               if ('serviceWorker' in navigator && 'SyncManager' in window) {
                 navigator.serviceWorker.ready.then(function(reg) {

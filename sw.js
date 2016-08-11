@@ -72,6 +72,7 @@ function sendAllFromOutbox(posts) {
 
 //install event
 self.addEventListener('install', (event) => {
+  console.log('install from SW');
   event.waitUntil(
     caches.open(CACHE_NAME).then( (cache) => {
       cache.addAll(CACHE_ARRAY)
@@ -114,6 +115,7 @@ self.addEventListener( 'fetch', (event) => {
 
    var requestURL = new URL(event.request.url);
 
+//these have their own response handling so that if it is offline - a 503 can be sent
 
   if (event.request.url === 'https://stirapi.herokuapp.com/signin' ||
       event.request.url === 'https://stirapi.herokuapp.com/signup' ||
@@ -141,11 +143,11 @@ self.addEventListener( 'fetch', (event) => {
           } )
           .catch( () => {
             console.log('network failed');
-            return new Response( "<h1> You cannot login offline </h1>" , {
+            return new Response( { "error": "No Network" } , {
               ok: false,
               status: 503,
               headers: {
-                'Content-Type' : 'text/html'
+                'Content-Type' : 'application/json'
               }
             })
           } );
@@ -158,24 +160,21 @@ self.addEventListener( 'fetch', (event) => {
 
     var resObj = [{title:"Mac and cheese",_id:"579f6d34a1d8c41100ab70cc",offline:true,user_id:"579b4194cfe5401100c4d315",text:"Lots of cheese. Done."}, {title:"Offline Post",_id:"47999f6d34a1d8c41100bb70cc",offline:true,user_id:"579b4194cfe5401100c4d315",text:"Offline. Done. 2"}];
 
-    event.respondWith(
 
-      openDatabase('Posts').then( function(db) {
-        return databaseGet('posts',db)
-      } ).then( function(posts) {
-       console.log('posts from IDB', posts);
 
-       return fetch(event.request).then( function(response) {
-         return response;
-       } ).catch( function(err) {
-         console.log('network error', err);
-         return new Response( JSON.stringify(posts), {
-           headers: {'Content-Type': 'application/json'}
-         });
-       } );
-
-      } )
-    );
+      event.respondWith(
+        fetch(event.request).then( (response) => {
+          return response;
+        } ).catch( (err) => {
+          return new Response( { "error": "No Network" } , {
+            ok: false,
+            status: 503,
+            headers: {
+              'Content-Type' : 'application/json'
+            }
+          });
+        } )
+      );
   }
 
   else if (event.request.url.indexOf('https://stirapi.herokuapp.com/viewPost') > -1) {
@@ -237,12 +236,14 @@ self.addEventListener( 'fetch', (event) => {
       })
     );
   }
+
 } );
 
 self.addEventListener('sync', function(event) {
   if (event.tag == 'send_post') {
     //const URL
     console.log('sync from SW - send post');
+
     event.waitUntil(
       openDatabase('Outbox').then( (db) => {
         return databaseGet('posts', db).then( (posts) => {
