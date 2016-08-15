@@ -99,10 +99,7 @@ export function signinUser(email,password) {
         //--save JWT token
         localStorage.setItem('token', response.data.token);
         //--redirect to '/posts'
-<<<<<<< HEAD
         dispatch(endLoading());
-=======
->>>>>>> aff03858dce0d912ec452c6a01a2bf5e1443f33b
         browserHistory.push('/posts/create');
       } )
       .catch( (err) => {
@@ -227,17 +224,13 @@ export function getUserPosts(user_id, token){
       .catch( (err) => {
         console.log('error from get posts action', err);
         if (err.response.status === 503) {
-<<<<<<< HEAD
+
           dispatch(endLoading());
           dispatch(authError('No internet connection, but you can view your offline posts! '));
         } else {
           dispatch(endLoading());
-=======
-          dispatch(authError('No internet connection, but you can view your offline posts! '));
-        } else {
->>>>>>> aff03858dce0d912ec452c6a01a2bf5e1443f33b
           dispatch(authError(err.response.data.error));
-        }
+        } 
 
       });
   }
