@@ -8,12 +8,11 @@ class SearchBar extends Component {
     var {searchText} = this.props;
 
     return (
-      <div>
-          <input type='search' ref='searchText' placeholder='Search Recipes' value={searchText} onChange={ () => {
+          <input type='search' className='search-bar' ref='searchText' placeholder='Search Recipes' value={searchText} onChange={ () => {
               var searchText = this.refs.searchText.value;
               this.props.setSearchText(searchText);
             }} />
-        </div>
+
     );
   }
 }

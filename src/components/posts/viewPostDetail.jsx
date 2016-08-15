@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
+import {Spinner} from 'react-mdl';
 
 class ViewPostDetail extends Component {
 
@@ -33,18 +34,21 @@ class ViewPostDetail extends Component {
 
       if (!this.props.selected) {
         return (
-          <div>Loading Post</div>
+          <Spinner />
         );
       } else {
 
           return (
             <div>
-              <div className='pull-sx-right'>
-                <button onClick={ () => this.onButtonClick(this.props.selected._id) } className='btn btn-danger '>Delete Post</button>
-              </div>
-              <h4>{this.props.selected.title}</h4>
-              <p>{this.props.selected.text}</p>
 
+              <div className='signin-title-box viewpostsdetail-title-box'>
+                <h3 className='signin-title'>{this.props.selected.title}</h3>
+              </div>
+
+              <button onClick={ () => this.onButtonClick(this.props.selected._id) } className='delete-post'>Delete Post</button>
+              <div className='viewdetail-box'>
+                <p>{this.props.selected.text}</p>
+              </div>
             {this.renderAlert()}
 
             </div>

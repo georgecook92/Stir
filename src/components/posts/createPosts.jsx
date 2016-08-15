@@ -3,14 +3,33 @@ import {connect} from 'react-redux';
 import {reduxForm} from 'redux-form';
 import * as actions from '../../actions';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {Textfield, Spinner} from 'react-mdl';
 
 var Dexie = require('dexie');
 
 class CreatePosts extends Component {
 
-  handleFormSubmit(formProps) {
-    //call action creator to sign up user
-    this.props.sendPost(formProps);
+  handleFormSubmit({title,text}) {
+    var errors = '';
+
+    if (title == undefined || title == '') {
+      errors = '<div>Please provide a title for your recipe.</div>';
+    }
+
+    if(text == undefined || text == '') {
+      errors += '<div>Please provide content for your recipe</div>';
+    }
+
+    if(errors == '') {
+      console.log('attempting post');
+      this.props.startLoading();
+      this.props.sendPost({title,text});
+    }
+    else {
+      this.props.authError(errors);
+    }
+
+
   }
 
   componentWillUnmount() {
@@ -20,9 +39,21 @@ class CreatePosts extends Component {
   renderAlert() {
     if (this.props.errorMessage) {
       return (
-        <div className='alert alert-danger'>
-          <strong>Oops!</strong> {this.props.errorMessage}
+        <div className='alert-message'>
+          <strong>Oops!</strong>
+            <div dangerouslySetInnerHTML={{__html: this.props.errorMessage}}>
+            </div>
         </div>
+      );
+    }
+  }
+
+  renderSpinner() {
+    if (this.props.loading) {
+      return (
+
+          <Spinner />
+
       );
     }
   }
@@ -33,24 +64,33 @@ class CreatePosts extends Component {
 
     return (
       <div>
-        <h4>Create Recipes</h4>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+        <div className='signin-title-box'>
+          <h3 className='signin-title'>Create a post.</h3>
+        </div>
+        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))} className='postForm'>
 
-          <fieldset className='form-group'>
-            <label>Title:</label>
-            <input className='form-control' {...title} />
-            {title.touched && title.error && <div className='error'>{title.error}</div>}
-          </fieldset>
+          {this.renderSpinner()}
 
-          <fieldset className='form-group'>
-            <label>Text:</label>
-            <textarea className='form-control' rows='10' {...text} />
-            {text.touched && text.error && <div className='error'>{text.error}</div>}
-          </fieldset>
+          <Textfield
+              onChange={() => {}}
+              label="Title"
+              floatingLabel
+              type='text'
+              {...title}
+          />
+
+          <Textfield
+              onChange={() => {}}
+              label="Text"
+              floatingLabel
+              rows={5}
+              type='text'
+              {...text}
+          />
 
           {this.renderAlert()}
 
-          <button action='submit' className='btn btn-primary'>Create</button>
+          <button action='submit'>Create</button>
 
         </form>
       </div>
@@ -58,28 +98,14 @@ class CreatePosts extends Component {
   }
 }
 
-function validate(formProps) {
-  const errors = {};
-
-  if (!formProps.title ) {
-    errors.title = 'Please enter a title for the post';
-  }
-
-  if (!formProps.text ) {
-    errors.text = 'Please enter content for the post';
-  }
-
-  return errors;
-}
-
 function mapStateToProps(state) {
   return {
-    errorMessage: state.auth.error
+    errorMessage: state.auth.error,
+    loading: state.loading
   }
 }
 
 export default reduxForm({
   form: 'post',
-  fields: ['title','text'],
-  validate
+  fields: ['title','text']
 }, mapStateToProps, actions)(CreatePosts);

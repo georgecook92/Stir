@@ -4,11 +4,14 @@ import * as actions from '../../actions';
 import {Link} from 'react-router';
 import SearchBar from './searchBar';
 import SearchAPI from '../../../searchAPI';
+import {Grid, Cell, Card, CardTitle, CardActions, Button, Spinner} from 'react-mdl';
+import { browserHistory } from 'react-router';
 
 class ViewPosts extends Component {
 
   componentDidMount() {
     const {user_id,token} = this.props.auth;
+    this.props.startLoading();
     this.props.getUserPosts(user_id, token);
   }
 
@@ -41,28 +44,51 @@ class ViewPosts extends Component {
 
         if (post.offline) {
           return (
-            <li className='list-group-item' key={post._id}>
-              <Link to={`/posts/view/${post._id}`}>
-                <strong>{post.title}</strong>
-              </Link>
-              <button className='btn btn-success pull-xs-right btn-sm' onClick={ () => this.buttonClick(post._id, !post.offline)}>Available Offline</button>
-            </li>
+
+            <Cell col={6} tablet={8} key={post._id} className='mdl-card' shadow={0} style={{ background: '#448AFF'}}>
+                <CardTitle expand style={{alignItems: 'flex-start', color: '#fff'}}>
+                    <h4 style={{marginTop: '0'}}>
+                        {post.title}
+                    </h4>
+                </CardTitle>
+
+                <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', color: '#fff', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                    <Button primary style={{fontSize: '.9rem', color: '#fff', marginRight: '1rem'}} onClick={ () => {
+                        browserHistory.push(`/posts/view/${post._id}`);
+                      } }>View Post</Button>
+                    <Button primary style={{fontSize: '.9rem', color: '#fff', background: '#4CAF50'}} onClick={ () => {
+                          this.buttonClick(post._id, !post.offline)
+                        } }>Available Offline</Button>
+                    <div className="mdl-layout-spacer"></div>
+                </CardActions>
+            </Cell>
           );
         }
         return (
-          <li className='list-group-item' key={post._id}>
-            <Link to={`/posts/view/${post._id}`}>
-              <strong>{post.title}</strong>
-            </Link>
-            <button className='btn btn-danger pull-xs-right btn-sm' onClick={ () => this.buttonClick(post._id, !post.offline)}>Not Available Offline</button>
-          </li>
+
+          <Cell col={6} tablet={8} key={post._id} className='mdl-card' shadow={0} style={{ background: '#448AFF'}}>
+              <CardTitle expand style={{alignItems: 'flex-start', color: '#fff'}}>
+                  <h4 style={{marginTop: '0'}}>
+                      {post.title}
+                  </h4>
+              </CardTitle>
+
+              <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', color: '#fff', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                <Button primary style={{fontSize: '.9rem', color: '#fff', marginRight: '1rem'}} onClick={ () => {
+                    browserHistory.push(`/posts/view/${post._id}`);
+                  } }>View Post</Button>
+                <Button primary style={{fontSize: '.9rem', background: '#d8350b', color: 'white'}} onClick={ () => {
+                      this.buttonClick(post._id, !post.offline)
+                    } }>Click For Offline</Button>
+                  <div className="mdl-layout-spacer"></div>
+              </CardActions>
+          </Cell>
         );
     } );
     }
   }
 
   renderAlert() {
-    console.log(this.props);
     if (this.props.errorMessage) {
       return (
         <div className='alert alert-danger'>
@@ -72,13 +98,31 @@ class ViewPosts extends Component {
     }
   }
 
+  renderSpinner() {
+    if (this.props.loading) {
+      return (
+
+          <Spinner />
+
+      );
+    }
+  }
+
   render() {
 
     return (
       <div>
-        <h4>Search Your Recipes</h4>
+        <div className='signin-title-box viewposts-title-box'>
+          <h3 className='signin-title'>View Your Recipes.</h3>
+        </div>
         <SearchBar />
+
+      {this.renderSpinner()}
+
+      <Grid style={{width: '90%', margin: '0 auto'}}>
         {this.renderPosts()}
+      </Grid>
+
         {this.renderAlert()}
       </div>
     );
@@ -90,7 +134,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     errorMessage: state.auth.error,
     allPosts: state.posts.all,
-    searchText: state.searchText
+    searchText: state.searchText,
+    loading: state.loading
   }
 }
 

@@ -8,7 +8,6 @@ var Dexie = require('dexie');
 
 import App from './components/app';
 import Signin from './components/auth/signin';
-import Signout from './components/auth/signout';
 import Signup from './components/auth/signup';
 import createPosts from './components/posts/createPosts';
 import viewPosts from './components/posts/viewPosts';
@@ -48,7 +47,7 @@ db.users
         payload: doc[0]
       });
 
-      browserHistory.push('/posts/create');
+      browserHistory.push('/posts/view');
 
     }
   } )
@@ -62,7 +61,6 @@ ReactDOM.render(
       <Route path='/' component={App}>
         <IndexRoute component={Welcome} />
         <Route path='signin' component={Signin} />
-        <Route path='signout' component={Signout} />
         <Route path='signup' component={Signup} />
         <Route path='posts/create' component={RequireAuth(createPosts)} />
         <Route path='posts/view' component={RequireAuth(viewPosts)} />

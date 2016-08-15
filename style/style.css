@@ -1,7 +1,145 @@
+a {
+  color: black;
+  text-decoration: none;
+}
+
 .error {
   color: red;
 }
 
+.signin-wrapper {
+
+}
+
 .form-check-label {
   margin-right: 20px;
+}
+
+.mdl-layout {
+  background-color: rgb(245, 245, 245);
+}
+
+.mdl-layout__title{
+  color: black;
+  text-decoration: none;
+}
+
+.signinForm, .postForm {
+  width: 40%;
+  margin: 0 auto;
+  border: 1px solid #4CAF50;
+  border-radius: .3rem;
+  padding: 3rem;
+  background-color: white;
+}
+
+.postForm {
+  width: 60%;
+}
+
+.signin-title-box {
+  width: 100%;
+  height: 100px;
+  overflow: auto;
+  margin-bottom: 6rem;
+  background-color: white;
+}
+
+.viewposts-title-box {
+  margin-bottom: 1.5rem;
+}
+
+.viewpostsdetail-title-box {
+  margin-bottom: 0;
+}
+
+.search-bar {
+  width: 50%;
+  margin: 4rem auto;
+  display: block;
+  font-size: 14px;
+  height: 50px;
+  background-color: white;
+  border: 1px solid #4CAF50;
+  border-radius: .3rem;
+}
+
+
+.signin-title {
+  text-align: center;
+  margin-top: 2.4rem;
+  font-size: 1.9rem;
+}
+
+.signin-form-box {
+  background-color: rgb(245, 245, 245);
+  height: 100%;
+}
+
+.signinForm button, .postForm button {
+  background-color: #4CAF50;
+  border: none;
+  width: 90px;
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+.signinForm button:hover, .postForm button {
+  cursor: pointer;
+}
+
+.alert-message {
+  width: 90%;
+  line-height: 4rem;
+  padding: 1rem;
+  text-align: center;
+  background-color: #F2DEDE;
+  margin: 30px auto 0 auto;
+  border: 1px solid #d58181;
+  border-radius: .2rem;
+}
+
+.mdl-textfield {
+  display: block;
+  width: 100%;
+}
+
+.viewdetail-box {
+  width: 60%;
+  background-color: white;
+  margin: 5rem auto;
+  min-height: 200px;
+  padding: 2.5rem;
+  border: 1px solid #4CAF50;
+  border-radius: .3rem;
+
+}
+
+.delete-post {
+  width: 10rem;
+  font-size: 1.1rem;
+  background-color: #d8350b;
+  border: none;
+  padding: 1.5rem 1rem;
+  color: white;
+  cursor: pointer;
+}
+
+.welcome-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-content-box {
+  width: 70%;
+  background-color: white;
+  padding: 3rem;
+  border: 1px solid #4CAF50;
+  border-radius: .3rem;
+  margin-top: 6rem;
+}
+
+.titlepage-title, .titlepage-secondary-title {
+  text-align: center;
+  margin-top: 4rem;
 }

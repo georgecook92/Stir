@@ -1,13 +1,35 @@
 import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import * as actions from '../../actions';
+import {Textfield, Spinner} from 'react-mdl';
+
+
 
 class Signin extends Component {
 
   handleFormSubmit({email,password}) {
-    //action to log user in
 
-    this.props.signinUser({email,password});
+    //console.log(formProps);
+
+    var errors = '';
+
+    if (email == undefined || email == '') {
+      errors = '<div>Please provide your email</div>';
+    }
+
+    if(password == undefined || password == '') {
+      errors += '<div>Please provide your password</div>';
+    }
+
+    if(errors == '') {
+      console.log('attempting signin');
+      this.props.startLoading();
+      this.props.signinUser(email, password);
+    }
+    else {
+      this.props.authError(errors);
+    }
+
   }
 
   componentWillUnmount() {
@@ -16,10 +38,23 @@ class Signin extends Component {
 
   renderAlert() {
     if (this.props.errorMessage) {
+      
       return (
-        <div className='alert alert-danger'>
-          <strong>Oops!</strong> {this.props.errorMessage}
+        <div className='alert-message'>
+          <strong>Oops!</strong>
+            <div dangerouslySetInnerHTML={{__html: this.props.errorMessage}}>
+            </div>
         </div>
+      );
+    }
+  }
+
+  renderSpinner() {
+    if (this.props.loading) {
+      return (
+
+          <Spinner />
+
       );
     }
   }
@@ -29,44 +64,54 @@ class Signin extends Component {
     const {handleSubmit, fields: {email,password} } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-        <fieldset className='form-group'>
-          <label>Email:</label>
-          <input {...email} type='email' className="form-control" />
-          {email.touched && email.error && <div className='error'>{email.error}</div>}
-        </fieldset>
+      <div>
 
-        <fieldset className='form-group'>
-          <label>Password:</label>
-          <input {...password} type='password' className="form-control" />
-          {password.touched && password.error && <div className='error'>{password.error}</div>}
-        </fieldset>
+        <div className='signin-title-box'>
+          <h3 className='signin-title'>Sign In To Stir.</h3>
+        </div>
 
-        {this.renderAlert()}
 
-        <button action='submit' className='btn btn-primary'>Sign in</button>
-      </form>
+
+        <div className='signin-form-box'>
+          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))} className='signinForm'>
+            {this.renderSpinner()}
+            <Textfield
+                onChange={() => {}}
+                label="Email"
+                floatingLabel
+                type='email'
+                {...email}
+            />
+
+            <Textfield
+                onChange={() => {}}
+                label="Password"
+                floatingLabel
+                type='password'
+                {...password}
+            />
+
+            <button action='submit'>Sign in</button>
+
+          {this.renderAlert()}
+
+          </form>
+        </div>
+
+      </div>
     );
   }
 }
 
-function validate(formProps) {
-  const errors = {};
-  if (!formProps.email ) {
-    errors.email = 'Please enter an email';
-  }
-  if (!formProps.password ) {
-    errors.password = 'Please enter a password';
-  }
-  return errors;
-}
 
 function mapStateToProps(state) {
-  return { errorMessage: state.auth.error };
+  return {
+    errorMessage: state.auth.error,
+    loading: state.loading
+    };
 }
 
 export default reduxForm({
   form: 'signin',
-  fields: ['email', 'password'],
-  validate
+  fields: ['email', 'password']
 }, mapStateToProps, actions)(Signin);

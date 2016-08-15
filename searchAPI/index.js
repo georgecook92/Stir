@@ -6,8 +6,10 @@ module.exports = {
     filteredRecipes = filteredRecipes.filter((recipe) => {
       //debugger;
       var text = recipe.title.toLowerCase();
-      
-      if (text.indexOf(searchText) > -1) {
+
+      var lwrSearchText = searchText.toLowerCase();
+
+      if (text.indexOf(lwrSearchText) > -1) {
         return recipe;
       }
 
