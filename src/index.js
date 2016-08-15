@@ -47,7 +47,7 @@ db.users
         payload: doc[0]
       });
 
-      browserHistory.push('/posts/view');
+      browserHistory.push('/posts/create');
 
     }
   } )
