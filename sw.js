@@ -72,6 +72,7 @@ function sendAllFromOutbox(posts) {
 
 //install event
 self.addEventListener('install', (event) => {
+  console.log('install from SW');
   event.waitUntil(
     caches.open(CACHE_NAME).then( (cache) => {
       cache.addAll(CACHE_ARRAY)

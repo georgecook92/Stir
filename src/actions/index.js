@@ -99,7 +99,10 @@ export function signinUser(email,password) {
         //--save JWT token
         localStorage.setItem('token', response.data.token);
         //--redirect to '/posts'
+<<<<<<< HEAD
         dispatch(endLoading());
+=======
+>>>>>>> aff03858dce0d912ec452c6a01a2bf5e1443f33b
         browserHistory.push('/posts/create');
       } )
       .catch( (err) => {
@@ -193,6 +196,7 @@ export function getUserPosts(user_id, token){
       }
     }).then( (response) => {
       console.log('response from getPosts action ', response);
+
       dispatch( {type: GET_POSTS, payload: response.data} );
       dispatch(endLoading());
 
@@ -223,10 +227,15 @@ export function getUserPosts(user_id, token){
       .catch( (err) => {
         console.log('error from get posts action', err);
         if (err.response.status === 503) {
+<<<<<<< HEAD
           dispatch(endLoading());
           dispatch(authError('No internet connection, but you can view your offline posts! '));
         } else {
           dispatch(endLoading());
+=======
+          dispatch(authError('No internet connection, but you can view your offline posts! '));
+        } else {
+>>>>>>> aff03858dce0d912ec452c6a01a2bf5e1443f33b
           dispatch(authError(err.response.data.error));
         }
 
@@ -276,6 +285,10 @@ export function deletePost(post_id) {
 export function sendPost({title,text}) {
   return function(dispatch) {
 
+    var user_push_id = localStorage.getItem('userPushId');
+
+    //console.log('PUSH ID: ', user_push_id);
+
     var db = new Dexie('Users');
     db.version(1).stores({
       users: 'user_id, email, firstName, lastName, token'
@@ -286,6 +299,10 @@ export function sendPost({title,text}) {
       alert('Uh oh : ' + error);
     });
 
+    // if (user_push_id) {
+    //   console.log('There is a push id!');
+    // }
+
     db.users.toArray()
       .then( (doc) => {
         console.log('action doc', doc);
@@ -294,7 +311,8 @@ export function sendPost({title,text}) {
           title,
           user_id: doc[0].user_id,
           text,
-          offline: false
+          offline: false,
+          user_push_id: user_push_id
           },
           {
             headers: {
@@ -303,14 +321,19 @@ export function sendPost({title,text}) {
           } )
           .then( response => {
             console.log('response',response);
+
             dispatch(endLoading());
             browserHistory.push('/posts/view');
+
+
           })
           .catch( err => {
             console.log('error from send posts action', err);
             if (err.response.status === 503) {
+
               dispatch(endLoading());
               dispatch(authError('You\'re Offline! Please try again when you are online!'));
+
 
               if ('serviceWorker' in navigator && 'SyncManager' in window) {
                 navigator.serviceWorker.ready.then(function(reg) {
