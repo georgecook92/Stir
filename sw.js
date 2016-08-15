@@ -10,7 +10,7 @@ var CACHE_ARRAY = [
   '/manifest.json'
 ];
 
-var CACHE_NAME = 'v3';
+var CACHE_NAME = 'v4';
 
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {

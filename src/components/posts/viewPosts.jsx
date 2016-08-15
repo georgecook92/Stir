@@ -91,7 +91,7 @@ class ViewPosts extends Component {
   renderAlert() {
     if (this.props.errorMessage) {
       return (
-        <div className='alert alert-danger'>
+        <div className='alert-message'>
           <strong>Oops!</strong> {this.props.errorMessage}
         </div>
       );
