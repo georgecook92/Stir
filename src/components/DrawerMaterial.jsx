@@ -10,7 +10,7 @@ class HeaderMaterial extends Component {
     if (this.props.authenticated) {
       //show link to sign out
       return [
-        <Link className="mdl-navigation__link" to="/signout" key={1} onClick={ () => {this.props.signoutUser(this.props.user_id)} } >Signout</Link>,
+        <Link className="mdl-navigation__link" to="/" key={1} onClick={ () => {this.props.signoutUser(this.props.user_id)} } >Signout</Link>,
         <Link className="mdl-navigation__link" to="/posts/create" key={2}>Create Recipe</Link>,
         <Link className="mdl-navigation__link" to="/posts/view" key={3}>View Recipes</Link>
 

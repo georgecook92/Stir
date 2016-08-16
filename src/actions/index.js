@@ -14,9 +14,10 @@ export var toggleOffline = (post_id,offlineStatus) => {
     })
       .then( (response) => {
         console.log('response from toggleOffline action ', response);
-        var db = new Dexie('Posts');
+        var db = new Dexie('Stir');
         db.version(1).stores({
-          posts: '_id, title, user_id, text, offline'
+          posts: '_id, title, user_id, text, offline',
+          users: 'user_id, email, firstName, lastName, token'
         });
 
         //delete post from IDB if offline status is false
@@ -81,11 +82,22 @@ export function signinUser(email,password) {
           payload: response.data
         });
 
-        
-        var db = new Dexie('Users');
+        //--save JWT token
+        localStorage.setItem('token', response.data.token);
+        //save personal info - for future - profile page etc
+        localStorage.setItem('user_id', response.data.user_id);
+        localStorage.setItem('email', response.data.email);
+        localStorage.setItem('firstName', response.data.forename);
+        localStorage.setItem('lastName', response.data.surname);
+        localStorage.setItem('lastName', response.data.surname);
+
+        //IDB save
+        var db = new Dexie('Stir');
         db.version(1).stores({
-      		users: 'user_id, email, firstName, lastName, token'
-      	});
+          posts: '_id, title, user_id, text, offline',
+          users: 'user_id, email, firstName, lastName, token'
+        });
+
         // Open the database
       	db.open().catch(function(error) {
       		alert('Uh oh : ' + error);
@@ -98,8 +110,7 @@ export function signinUser(email,password) {
           lastName: response.data.surname,
           token: response.data.token
       	});
-        //--save JWT token
-        localStorage.setItem('token', response.data.token);
+
         //--redirect to '/posts'
         dispatch(endLoading());
         browserHistory.push('/posts/create');
@@ -128,12 +139,11 @@ export function signupUser({email,password,firstName,lastName}) {
         dispatch({type: SAVE_USER, payload: response.data});
         console.log(response.data);
 
-        var db = new Dexie('Users');
-
-        // Define a schema
-      	db.version(1).stores({
-      		users: 'user_id, email, firstName, lastName, token'
-      	});
+        var db = new Dexie('Stir');
+        db.version(1).stores({
+          posts: '_id, title, user_id, text, offline',
+          users: 'user_id, email, firstName, lastName, token'
+        });
 
         // Open the database
       	db.open().catch(function(error) {
@@ -172,9 +182,10 @@ export function signupUser({email,password,firstName,lastName}) {
 export function getUserPosts(user_id, token){
   return function(dispatch) {
 
-    var db = new Dexie('Posts');
+    var db = new Dexie('Stir');
     db.version(1).stores({
-      posts: '_id, title, user_id, text, offline'
+      posts: '_id, title, user_id, text, offline',
+      users: 'user_id, email, firstName, lastName, token'
     });
 
     // Open the database
@@ -250,9 +261,10 @@ export function deletePost(post_id) {
     .then( (response) => {
       console.log('response from delete post action',response);
 
-      var db = new Dexie('Posts');
+      var db = new Dexie('Stir');
       db.version(1).stores({
-        posts: '_id, title, user_id, text, offline'
+        posts: '_id, title, user_id, text, offline',
+        users: 'user_id, email, firstName, lastName, token'
       });
 
       db.open().then( function() {
@@ -284,8 +296,9 @@ export function sendPost({title,text}) {
 
     //console.log('PUSH ID: ', user_push_id);
 
-    var db = new Dexie('Users');
+    var db = new Dexie('Stir');
     db.version(1).stores({
+      posts: '_id, title, user_id, text, offline',
       users: 'user_id, email, firstName, lastName, token'
     });
 
@@ -414,28 +427,16 @@ export function endLoading() {
 export function signoutUser(user_id) {
   return function(dispatch) {
     localStorage.removeItem('token');
+    dispatch({type: UNAUTH_USER});
 
-    var dbPosts = new Dexie('Posts');
-    dbPosts.version(1).stores({
-      posts: '_id, title, user_id, text, offline'
-    });
-    dbPosts.delete();
-
-    var db = new Dexie('Users');
+    var db = new Dexie('Stir');
     db.version(1).stores({
+      posts: '_id, title, user_id, text, offline',
       users: 'user_id, email, firstName, lastName, token'
     });
 
-    db.open().then( function() {
-    return db.users
-      .where("user_id")
-      .equals(user_id)
-      .delete();
-    } ).then( function(doc) {
-      console.log('doc',doc);
-    } );
+    db.delete();
 
-    dispatch({type: UNAUTH_USER});
   }
 }
 

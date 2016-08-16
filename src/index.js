@@ -18,42 +18,44 @@ import RequireAuth from './components/auth/require_auth';
 
 import {AUTH_USER, SAVE_USER} from './actions/types';
 
-const token = localStorage.getItem('token');
 
-var db = new Dexie('Users');
-db.version(1).stores({
-  users: 'user_id, email, firstName, lastName, token'
-});
 
-// Open the database
-db.open().catch(function(error) {
-  alert('Uh oh : ' + error);
-});
 
-//push to posts page if logged in and handle some redux state
-db.users
-  .toArray()
-  .then( (doc) => {
-    //if indexedDB has a token or localStorage has a token
-    if (doc[0].token || localStorage.getItem('token')) {
-      //we need to update app state
-      store.dispatch( { type: AUTH_USER } );
+if (window.indexedDB) {
+  
+  var db = new Dexie('Stir');
+  db.version(1).stores({
+    posts: '_id, title, user_id, text, offline',
+    users: 'user_id, email, firstName, lastName, token'
+  });
 
-      doc[0].forename = doc[0].firstName;
-      doc[0].surname = doc[0].lastName;
+  // Open the database
+  db.open().catch(function(error) {
+    alert('Uh oh : ' + error);
+  });
+  db.users
+    .toArray()
+    .then( (doc) => {
+      if (doc[0].token) {
+        store.dispatch( { type: AUTH_USER } );
 
-      store.dispatch({
-        type: SAVE_USER,
-        payload: doc[0]
-      });
+        doc[0].forename = doc[0].firstName;
+        doc[0].surname = doc[0].lastName;
 
-      browserHistory.push('/posts/create');
+        store.dispatch({
+          type: SAVE_USER,
+          payload: doc[0]
+        });
 
-    }
-  } )
-  .catch( (err) => {
-    console.log(err);
-  } );
+        browserHistory.push('/posts/create');
+      }
+    })
+    .catch( (err) => {
+      console.log(err);
+    } );
+} else if(localStorage.getItem('token')) {
+  console.log('local storage');
+}
 
 ReactDOM.render(
   <Provider store={store}>
