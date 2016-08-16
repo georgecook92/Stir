@@ -23,7 +23,8 @@ class CreatePosts extends Component {
     if(errors == '') {
       console.log('attempting post');
       this.props.startLoading();
-      this.props.sendPost({title,text});
+      var obj = { title, text, user_id: this.props.auth.user_id  };
+      this.props.sendPost(obj);
     }
     else {
       this.props.authError(errors);
@@ -101,7 +102,8 @@ class CreatePosts extends Component {
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
-    loading: state.loading
+    loading: state.loading,
+    auth: state.auth
   }
 }
 

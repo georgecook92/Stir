@@ -14,45 +14,51 @@ var CACHE_NAME = 'v4';
 
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {
-    var version = 10;
-    var request = indexedDB.open(name, version);
-    var db;
-    request.onupgradeneeded = function(e) {
-      db = e.target.result;
-      e.target.transaction.onerror = reject;
-    };
-    request.onsuccess = function(e) {
-      db = e.target.result;
-      console.log('OPENED DATABASE');
-      resolve(db);
-    };
-    request.onerror = reject;
+    if (window.indexedDB) {
+      var version = 10;
+      var request = indexedDB.open(name, version);
+      var db;
+      request.onupgradeneeded = function(e) {
+        db = e.target.result;
+        e.target.transaction.onerror = reject;
+      };
+      request.onsuccess = function(e) {
+        db = e.target.result;
+        console.log('OPENED DATABASE');
+        resolve(db);
+      };
+      request.onerror = reject;
+    }
   });
 }
 
 function databaseGet(type,db) {
   return new Promise(function(resolve, reject) {
-    var transaction = db.transaction([type], 'readonly');
-    var store = transaction.objectStore(type);
-    var request = store.getAll();
-    request.onsuccess = function(e) {
-      var result = e.target.result;
-      resolve(result);
-    };
-    request.onerror = reject;
+    if (window.indexedDB) {
+      var transaction = db.transaction([type], 'readonly');
+      var store = transaction.objectStore(type);
+      var request = store.getAll();
+      request.onsuccess = function(e) {
+        var result = e.target.result;
+        resolve(result);
+      };
+      request.onerror = reject;
+    }
   });
 }
 
 function databaseGetById(type, id, db) {
   return new Promise(function(resolve, reject) {
-    var transaction = db.transaction([type], 'readonly');
-    var store = transaction.objectStore(type);
-    var request = store.get(id);
-    request.onsuccess = function(e) {
-      var result = e.target.result;
-      resolve(result);
-    };
-    request.onerror = reject;
+    if (window.indexedDB) {
+      var transaction = db.transaction([type], 'readonly');
+      var store = transaction.objectStore(type);
+      var request = store.get(id);
+      request.onsuccess = function(e) {
+        var result = e.target.result;
+        resolve(result);
+      };
+      request.onerror = reject;
+    }
   });
 }
 

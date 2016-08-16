@@ -14,38 +14,40 @@ export var toggleOffline = (post_id,offlineStatus) => {
     })
       .then( (response) => {
         console.log('response from toggleOffline action ', response);
-        var db = new Dexie('Stir');
-        db.version(1).stores({
-          posts: '_id, title, user_id, text, offline',
-          users: 'user_id, email, firstName, lastName, token'
-        });
 
-        //delete post from IDB if offline status is false
-        if (!offlineStatus) {
-          db.open().then( function() {
-          return db.posts
-            .where("_id")
-            .equals(post_id)
-            .delete();
-          } ).then( function(doc) {
-            console.log('doc',doc);
-          } );
+        if (window.indexedDB) {
+          var db = new Dexie('Stir');
+          db.version(1).stores({
+            posts: '_id, title, user_id, text, offline',
+            users: 'user_id, email, firstName, lastName, token'
+          });
 
-          //else add post in to IDB as it is now available offline
-        } else {
-          response.data.forEach( (post) => {
-            if (post._id === post_id) {
-              db.posts.add({
-                _id: post._id,
-                title: post.title,
-                user_id: post.user_id,
-                text: post.text,
-                offline: post.offline
-              });
-            }
-          } );
+          //delete post from IDB if offline status is false
+          if (!offlineStatus) {
+            db.open().then( function() {
+            return db.posts
+              .where("_id")
+              .equals(post_id)
+              .delete();
+            } ).then( function(doc) {
+              console.log('doc',doc);
+            } );
+
+            //else add post in to IDB as it is now available offline
+          } else {
+            response.data.forEach( (post) => {
+              if (post._id === post_id) {
+                db.posts.add({
+                  _id: post._id,
+                  title: post.title,
+                  user_id: post.user_id,
+                  text: post.text,
+                  offline: post.offline
+                });
+              }
+            } );
+          }
         }
-
         dispatch( {type: GET_POSTS, payload: response.data} );
       })
       .catch( (err) => {
@@ -91,29 +93,33 @@ export function signinUser(email,password) {
         localStorage.setItem('lastName', response.data.surname);
         localStorage.setItem('lastName', response.data.surname);
 
-        //IDB save
-        var db = new Dexie('Stir');
-        db.version(1).stores({
-          posts: '_id, title, user_id, text, offline',
-          users: 'user_id, email, firstName, lastName, token'
-        });
+        //putting checks in for IDB
+        if (window.indexedDB) {
+          //IDB save
+          var db = new Dexie('Stir');
+          db.version(1).stores({
+            posts: '_id, title, user_id, text, offline',
+            users: 'user_id, email, firstName, lastName, token'
+          });
 
-        // Open the database
-      	db.open().catch(function(error) {
-      		alert('Uh oh : ' + error);
-      	});
-        //IDB add
-      	db.users.add({
-      		user_id: response.data.user_id,
-      		email: response.data.email,
-          firstName: response.data.forename,
-          lastName: response.data.surname,
-          token: response.data.token
-      	});
+          // Open the database
+        	db.open().catch(function(error) {
+        		alert('Uh oh : ' + error);
+        	});
+          //IDB add
+        	db.users.add({
+        		user_id: response.data.user_id,
+        		email: response.data.email,
+            firstName: response.data.forename,
+            lastName: response.data.surname,
+            token: response.data.token
+        	});
+        }
 
         //--redirect to '/posts'
         dispatch(endLoading());
         browserHistory.push('/posts/create');
+
       } )
       .catch( (err) => {
         //if request is bad
@@ -139,27 +145,25 @@ export function signupUser({email,password,firstName,lastName}) {
         dispatch({type: SAVE_USER, payload: response.data});
         console.log(response.data);
 
-        var db = new Dexie('Stir');
-        db.version(1).stores({
-          posts: '_id, title, user_id, text, offline',
-          users: 'user_id, email, firstName, lastName, token'
-        });
+        if (window.indexedDB) {
+          var db = new Dexie('Stir');
+          db.version(1).stores({
+            posts: '_id, title, user_id, text, offline',
+            users: 'user_id, email, firstName, lastName, token'
+          });
 
-        // Open the database
-      	db.open().catch(function(error) {
-      		alert('Uh oh : ' + error);
-      	});
-
-
-        db.users.add({
-      		user_id: response.data.user_id,
-      		email: response.data.email,
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
-          token: response.data.token
-      	});
-
-
+          // Open the database
+        	db.open().catch(function(error) {
+        		alert('Uh oh : ' + error);
+        	});
+          db.users.add({
+        		user_id: response.data.user_id,
+        		email: response.data.email,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            token: response.data.token
+        	});
+        }
         localStorage.setItem('token', response.data.token);
         dispatch(endLoading());
 
@@ -182,23 +186,25 @@ export function signupUser({email,password,firstName,lastName}) {
 export function getUserPosts(user_id, token){
   return function(dispatch) {
 
-    var db = new Dexie('Stir');
-    db.version(1).stores({
-      posts: '_id, title, user_id, text, offline',
-      users: 'user_id, email, firstName, lastName, token'
-    });
+    if (window.indexedDB) {
+      var db = new Dexie('Stir');
+      db.version(1).stores({
+        posts: '_id, title, user_id, text, offline',
+        users: 'user_id, email, firstName, lastName, token'
+      });
 
-    // Open the database
-    db.open().catch(function(error) {
-      alert('Uh oh : ' + error);
-    });
+      // Open the database
+      db.open().catch(function(error) {
+        alert('Uh oh : ' + error);
+      });
 
-    db.posts.toArray().then( (posts) =>  {
-      console.log('posts:', posts);
-      if (posts.length > 0) {
-        dispatch( {type: GET_POSTS, payload: posts} );
-      }
-    });
+      db.posts.toArray().then( (posts) =>  {
+        console.log('posts:', posts);
+        if (posts.length > 0) {
+          dispatch( {type: GET_POSTS, payload: posts} );
+        }
+      });
+    }
 
     axios.get(`${ROOT_URL}/getPosts?user_id=${user_id}`, {
       headers: {
@@ -214,22 +220,23 @@ export function getUserPosts(user_id, token){
 
         if (post.offline) {
 
-          db.posts.get(post._id).then( (result) => {
-            if (result) {
-              //console.log('Post is already in db', post.title);
-            } else {
-              //console.log('Post not in db', post.title);
-              //useful if a posts offline status has changed
-              db.posts.add({
-                _id: post._id,
-                title: post.title,
-                user_id: post.user_id,
-                text: post.text,
-                offline: post.offline
-              });
-            }
-          } )
-
+          if (window.indexedDB) {
+            db.posts.get(post._id).then( (result) => {
+              if (result) {
+                //console.log('Post is already in db', post.title);
+              } else {
+                //console.log('Post not in db', post.title);
+                //useful if a posts offline status has changed
+                db.posts.add({
+                  _id: post._id,
+                  title: post.title,
+                  user_id: post.user_id,
+                  text: post.text,
+                  offline: post.offline
+                });
+              }
+            } )
+          }
         }
       } );
 
@@ -261,21 +268,22 @@ export function deletePost(post_id) {
     .then( (response) => {
       console.log('response from delete post action',response);
 
-      var db = new Dexie('Stir');
-      db.version(1).stores({
-        posts: '_id, title, user_id, text, offline',
-        users: 'user_id, email, firstName, lastName, token'
-      });
+      if (window.indexedDB) {
+        var db = new Dexie('Stir');
+        db.version(1).stores({
+          posts: '_id, title, user_id, text, offline',
+          users: 'user_id, email, firstName, lastName, token'
+        });
 
-      db.open().then( function() {
-      return db.posts
-        .where("_id")
-        .equals(post_id)
-        .delete();
-      } ).then( function(doc) {
-        console.log('doc',doc);
-      } );
-
+        db.open().then( function() {
+        return db.posts
+          .where("_id")
+          .equals(post_id)
+          .delete();
+        } ).then( function(doc) {
+          console.log('doc',doc);
+        } );
+      }
       browserHistory.push('/posts/view');
     })
     .catch( (err) => {
@@ -289,98 +297,79 @@ export function deletePost(post_id) {
   }
 }
 
-export function sendPost({title,text}) {
+export function sendPost({title,text, user_id}) {
   return function(dispatch) {
 
     var user_push_id = localStorage.getItem('userPushId');
 
-    //console.log('PUSH ID: ', user_push_id);
+    //MIGHT NEED TO ERROR HANDLE LACK OF USER_ID in IDB
+    return axios.post(`${ROOT_URL}/sendPost`, {
+      title,
+      user_id,
+      text,
+      offline: false,
+      user_push_id: user_push_id
+      },
+      {
+        headers: {
+          authorisation: localStorage.getItem('token')
+        }
+      } )
+      .then( response => {
+        console.log('response',response);
 
-    var db = new Dexie('Stir');
-    db.version(1).stores({
-      posts: '_id, title, user_id, text, offline',
-      users: 'user_id, email, firstName, lastName, token'
-    });
-
-    // Open the database
-    db.open().catch(function(error) {
-      alert('Uh oh : ' + error);
-    });
-
-    // if (user_push_id) {
-    //   console.log('There is a push id!');
-    // }
-
-    db.users.toArray()
-      .then( (doc) => {
-        console.log('action doc', doc);
-        //MIGHT NEED TO ERROR HANDLE LACK OF USER_ID in IDB
-        return axios.post(`${ROOT_URL}/sendPost`, {
-          title,
-          user_id: doc[0].user_id,
-          text,
-          offline: false,
-          user_push_id: user_push_id
-          },
-          {
-            headers: {
-              authorisation: localStorage.getItem('token')
-            }
-          } )
-          .then( response => {
-            console.log('response',response);
-
-            dispatch(endLoading());
-            browserHistory.push('/posts/view');
+        dispatch(endLoading());
+        browserHistory.push('/posts/view');
 
 
-          })
-          .catch( err => {
-            console.log('error from send posts action', err);
-            if (err.response.status === 503) {
+      })
+      .catch( err => {
+        console.log('error from send posts action', err);
+        if (err.response.status === 503) {
 
-              dispatch(endLoading());
-              dispatch(authError('You\'re Offline! Please try again when you are online!'));
+          dispatch(endLoading());
+          dispatch(authError('You\'re Offline! Please try again when you are online!'));
+
+          // if ('serviceWorker' in navigator && 'SyncManager' in window) {
+          //   navigator.serviceWorker.ready.then(function(reg) {
+          //
+          //     var db = new Dexie('Outbox');
+          //     db.version(1).stores({
+          //       posts: '++id, title, user_id, text, offline'
+          //     });
+          //
+          //     db.posts.add({
+          //       title,
+          //       user_id: doc[0].user_id,
+          //       text,
+          //       offline: false
+          //     }).then( (doc) => {
+          //       console.log('outbox doc', doc);
+          //     } ).catch( (err) => {
+          //       console.log(err);
+          //     } )
+          //
+          //     return reg.sync.register('send_post');
+          //   }).catch(function() {
+          //     // system was unable to register for a sync,
+          //     // this could be an OS-level restriction
+          //     dispatch(removeAuthError());
+          //     dispatch(authError('You\'re Offline! But syncing in the background is not available.!'));
+          //   });
+          // }
+          // else {
+          //   // serviceworker/sync not supported
+          //   dispatch(removeAuthError());
+          //   dispatch(authError('You\'re Offline! But syncing in the background is not available.!'));
+          // }
+
+        } else {
+          dispatch(endLoading());
+          dispatch(authError(err.response.data.error));
+        }
+      });
 
 
-              if ('serviceWorker' in navigator && 'SyncManager' in window) {
-                navigator.serviceWorker.ready.then(function(reg) {
-
-                  var db = new Dexie('Outbox');
-                  db.version(1).stores({
-                    posts: '++id, title, user_id, text, offline'
-                  });
-
-                  db.posts.add({
-                    title,
-                    user_id: doc[0].user_id,
-                    text,
-                    offline: false
-                  }).then( (doc) => {
-                    console.log('outbox doc', doc);
-                  } ).catch( (err) => {
-                    console.log(err);
-                  } )
-
-                  return reg.sync.register('send_post');
-                }).catch(function() {
-                  // system was unable to register for a sync,
-                  // this could be an OS-level restriction
-                  dispatch(removeAuthError());
-                  dispatch(authError('You\'re Offline! But syncing in the background is not available.!'));
-                });
-              } else {
-                // serviceworker/sync not supported
-                dispatch(removeAuthError());
-                dispatch(authError('You\'re Offline! But syncing in the background is not available.!'));
-              }
-
-            } else {
-              dispatch(endLoading());
-              dispatch(authError(err.response.data.error));
-            }
-          });
-      } );
   }
 }
 
@@ -429,14 +418,15 @@ export function signoutUser(user_id) {
     localStorage.removeItem('token');
     dispatch({type: UNAUTH_USER});
 
-    var db = new Dexie('Stir');
-    db.version(1).stores({
-      posts: '_id, title, user_id, text, offline',
-      users: 'user_id, email, firstName, lastName, token'
-    });
+    if (window.indexedDB) {
+      var db = new Dexie('Stir');
+      db.version(1).stores({
+        posts: '_id, title, user_id, text, offline',
+        users: 'user_id, email, firstName, lastName, token'
+      });
 
-    db.delete();
-
+      db.delete();
+    }
   }
 }
 
