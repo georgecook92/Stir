@@ -22,7 +22,7 @@ import {AUTH_USER, SAVE_USER} from './actions/types';
 
 
 if (window.indexedDB) {
-  
+  console.log('IDB supported');
   var db = new Dexie('Stir');
   db.version(1).stores({
     posts: '_id, title, user_id, text, offline',
