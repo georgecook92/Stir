@@ -80,6 +80,8 @@ export function signinUser(email,password) {
           type: SAVE_USER,
           payload: response.data
         });
+
+        
         var db = new Dexie('Users');
         db.version(1).stores({
       		users: 'user_id, email, firstName, lastName, token'
@@ -230,7 +232,7 @@ export function getUserPosts(user_id, token){
         } else {
           dispatch(endLoading());
           dispatch(authError(err.response.data.error));
-        } 
+        }
 
       });
   }
