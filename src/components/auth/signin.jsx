@@ -23,7 +23,7 @@ class Signin extends Component {
 
     if(errors == '') {
       console.log('attempting signin');
-      this.props.startLoading();
+      //this.props.startLoading();
       this.props.signinUser(email, password);
     }
     else {
@@ -38,7 +38,7 @@ class Signin extends Component {
 
   renderAlert() {
     if (this.props.errorMessage) {
-      
+
       return (
         <div className='alert-message'>
           <strong>Oops!</strong>
