@@ -30,9 +30,10 @@ if (window.indexedDB) {
   });
 
   // Open the database
-  db.open().catch(function(error) {
-    alert('Uh oh : ' + error);
-  });
+  // db.open().catch(function(error) {
+  //   alert('Uh oh : ' + error);
+  // });
+  
   db.users
     .toArray()
     .then( (doc) => {

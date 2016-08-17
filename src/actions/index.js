@@ -103,9 +103,9 @@ export function signinUser(email,password) {
           });
 
           // Open the database
-        	db.open().catch(function(error) {
-        		alert('Uh oh : ' + error);
-        	});
+        	// db.open().catch(function(error) {
+        	// 	alert('Uh oh : ' + error);
+        	// });
           //IDB add
         	db.users.add({
         		user_id: response.data.user_id,
