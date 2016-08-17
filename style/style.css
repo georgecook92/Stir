@@ -46,7 +46,7 @@ a {
 }
 
 .search-bar {
-  width: 50%;
+  width: 60%;
   margin: 4rem auto;
   display: block;
   font-size: 14px;
@@ -143,6 +143,10 @@ a {
 
   .signin-title-box {
     margin-bottom: 4.5rem;
+  }
+
+  .search-bar {
+    width: 80%;
   }
 
 }
