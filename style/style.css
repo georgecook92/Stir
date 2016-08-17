@@ -7,10 +7,6 @@ a {
   color: red;
 }
 
-.signin-wrapper {
-
-}
-
 .form-check-label {
   margin-right: 20px;
 }
@@ -25,16 +21,12 @@ a {
 }
 
 .signinForm, .postForm {
-  width: 40%;
+  width: 60%;
   margin: 0 auto;
   border: 1px solid #4CAF50;
   border-radius: .3rem;
   padding: 3rem;
   background-color: white;
-}
-
-.postForm {
-  width: 60%;
 }
 
 .signin-title-box {
@@ -144,8 +136,13 @@ a {
   margin-top: 4rem;
 }
 
-@media (max-width: 839px) {
-  .auth-nav {
-    color: red;
+@media (max-width: 700px) {
+  .signinForm, .postForm {
+    width: 70%;
   }
+
+  .signin-title-box {
+    margin-bottom: 4.5rem;
+  }
+
 }
