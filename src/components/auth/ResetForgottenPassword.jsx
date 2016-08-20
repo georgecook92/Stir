@@ -6,7 +6,13 @@ import { Link } from 'react-router';
 
 
 
-class ForgottenPassword extends Component {
+class ResetForgottenPassword extends Component {
+
+  constructor() {
+    super();
+    const {token} = this.props.params;
+    console.log('token',token);
+  }
 
   handleFormSubmit({email}) {
 
@@ -56,16 +62,14 @@ class ForgottenPassword extends Component {
 
   render() {
 
-    const {handleSubmit, fields: {email,password} } = this.props;
+    const {handleSubmit, fields: {password, passwordConfirm} } = this.props;
 
     return (
       <div>
 
         <div className='pwd-title-box'>
-          <h3 className='signin-title'>Forgotten Your Password?</h3>
+          <h3 className='signin-title'>Reset Your Password Below</h3>
         </div>
-
-        <h6 className='forgotten-password-secondtitle'>Let us send you a link.</h6>
 
         <div className='signin-form-box'>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))} className='signinForm'>
@@ -75,15 +79,21 @@ class ForgottenPassword extends Component {
             {this.renderSpinner()}
             <Textfield
                 onChange={() => {}}
-                label="Email"
+                label="Password"
                 floatingLabel
-                type='email'
-                {...email}
+                type='password'
+                {...password}
             />
 
-            <button action='submit'>Sign in</button>
+            <Textfield
+                onChange={() => {}}
+                label="Password Confirm"
+                floatingLabel
+                type='password'
+                {...passwordConfirm}
+            />
 
-            <div><Link to='/forgottenPassword'>Forgotten Password?</Link></div>
+          <button action='submit'>Reset Password</button>
 
 
           {this.renderAlert()}
@@ -107,4 +117,4 @@ function mapStateToProps(state) {
 export default reduxForm({
   form: 'ForgottenPassword',
   fields: ['email']
-}, mapStateToProps, actions)(ForgottenPassword);
+}, mapStateToProps, actions)(ResetForgottenPassword);

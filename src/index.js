@@ -12,6 +12,7 @@ import Signup from './components/auth/signup';
 import ForgottenPassword from './components/auth/ForgottenPassword';
 import Profile from './components/Profile';
 import ResetPassword from './components/ResetPassword';
+import ResetForgottenPassword from './components/auth/ResetForgottenPassword';
 import createPosts from './components/posts/createPosts';
 import viewPosts from './components/posts/viewPosts';
 import viewPostDetail from './components/posts/viewPostDetail';
@@ -74,6 +75,7 @@ ReactDOM.render(
         <Route path='profile' component={RequireAuth(Profile)} />
         <Route path='reset' component={RequireAuth(ResetPassword)} />
         <Route path='forgottenPassword' component={ForgottenPassword} />
+        <Route path='resetForgottenPassword/:token' component={ResetForgottenPassword} />
       </Route>
 
     </Router>

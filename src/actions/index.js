@@ -461,7 +461,7 @@ export function resetPassword(email, oldPassword, newPassword) {
 
 export function forgottenPassword(email) {
   return function(dispatch) {
-    axios.post(`${ROOT_URL}/forgottenPassword`, {email})
+    axios.post(`${ROOT_URL}/forgotPassword`, {email})
     .then( (response) => {
       console.log('response from forgotten password', response);
     } )
