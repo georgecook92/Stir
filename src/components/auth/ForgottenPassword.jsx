@@ -81,9 +81,7 @@ class ForgottenPassword extends Component {
                 {...email}
             />
 
-            <button action='submit'>Sign in</button>
-
-            <div><Link to='/forgottenPassword'>Forgotten Password?</Link></div>
+          <button action='submit'>Submit</button>
 
 
           {this.renderAlert()}
