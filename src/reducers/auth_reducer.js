@@ -1,4 +1,4 @@
-import {AUTH_USER,UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE, SAVE_USER, GET_POSTS, REMOVE_AUTH_ERROR} from '../actions/types';
+import {AUTH_USER,UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE, SAVE_USER, GET_POSTS, REMOVE_AUTH_ERROR, UI_MESSAGE, REMOVE_UI_MESSAGE} from '../actions/types';
 
 
 export default function(state = {},action) {
@@ -12,8 +12,14 @@ export default function(state = {},action) {
     case AUTH_ERROR:
       return { ...state, error: action.payload };
 
+    case UI_MESSAGE:
+      return { ...state, message: action.payload };
+
     case REMOVE_AUTH_ERROR:
       return {...state, error: action.payload};
+
+    case REMOVE_UI_MESSAGE:
+      return { ...state, message: action.payload };
 
     case FETCH_MESSAGE:
       console.log(action.payload);

@@ -6,11 +6,9 @@ import { Link } from 'react-router';
 
 
 
-class Signin extends Component {
+class ForgottenPassword extends Component {
 
-  handleFormSubmit({email,password}) {
-
-    //console.log(formProps);
+  handleFormSubmit({email}) {
 
     var errors = '';
 
@@ -18,14 +16,10 @@ class Signin extends Component {
       errors = '<div>Please provide your email</div>';
     }
 
-    if(password == undefined || password == '') {
-      errors += '<div>Please provide your password</div>';
-    }
-
     if(errors == '') {
       console.log('attempting signin');
       this.props.startLoading();
-      this.props.signinUser(email, password);
+      this.props.forgottenPassword(email);
     }
     else {
       this.props.authError(errors);
@@ -67,14 +61,17 @@ class Signin extends Component {
     return (
       <div>
 
-        <div className='signin-title-box'>
-          <h3 className='signin-title'>Sign In To Stir.</h3>
+        <div className='pwd-title-box'>
+          <h3 className='signin-title'>Forgotten Your Password?</h3>
         </div>
 
-
+        <h6 className='forgotten-password-secondtitle'>Let us send you a link.</h6>
 
         <div className='signin-form-box'>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))} className='signinForm'>
+
+
+
             {this.renderSpinner()}
             <Textfield
                 onChange={() => {}}
@@ -82,14 +79,6 @@ class Signin extends Component {
                 floatingLabel
                 type='email'
                 {...email}
-            />
-
-            <Textfield
-                onChange={() => {}}
-                label="Password"
-                floatingLabel
-                type='password'
-                {...password}
             />
 
             <button action='submit'>Sign in</button>
@@ -116,6 +105,6 @@ function mapStateToProps(state) {
 }
 
 export default reduxForm({
-  form: 'signin',
-  fields: ['email', 'password']
-}, mapStateToProps, actions)(Signin);
+  form: 'ForgottenPassword',
+  fields: ['email']
+}, mapStateToProps, actions)(ForgottenPassword);

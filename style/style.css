@@ -20,7 +20,7 @@ a {
   text-decoration: none;
 }
 
-.signinForm, .postForm {
+.signinForm, .postForm, .reset-password-form {
   width: 60%;
   margin: 0 auto;
   border: 1px solid #4CAF50;
@@ -29,12 +29,20 @@ a {
   background-color: white;
 }
 
-.signin-title-box {
+.signin-title-box, .pwd-title-box {
   width: 100%;
   height: 100px;
   overflow: auto;
   margin-bottom: 6rem;
   background-color: white;
+}
+
+.pwd-title-box {
+  margin-bottom: 2rem;
+}
+
+.forgotten-password-secondtitle {
+  text-align: center;
 }
 
 .viewposts-title-box {
@@ -80,7 +88,7 @@ a {
   cursor: pointer;
 }
 
-.alert-message {
+.alert-message, .success-message {
   width: 90%;
   line-height: 4rem;
   padding: 1rem;
@@ -89,6 +97,11 @@ a {
   margin: 30px auto 0 auto;
   border: 1px solid #d58181;
   border-radius: .2rem;
+}
+
+.success-message {
+  background-color: #4CAF50;
+  border: 1px solid #4CAF50;
 }
 
 .mdl-textfield {
@@ -135,6 +148,24 @@ a {
   text-align: center;
   margin-top: 4rem;
 }
+
+.profile-pic {
+  display: block;
+  margin: 3rem auto;
+  width: 170px;
+  border-radius: 100px;
+  border: 1px solid #4CAF50;
+}
+
+.profile-info p {
+  font-size: 1.2rem;
+}
+
+.reset-password h4 {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
 
 @media (max-width: 700px) {
   .signinForm, .postForm {

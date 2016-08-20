@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {browserHistory} from 'react-router';
-import {AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_MESSAGE, SAVE_USER, GET_POSTS, GET_POST, SET_SEARCH_TEXT, REMOVE_AUTH_ERROR, TOGGLE_OFFLINE, REMOVE_SELECTED_RECIPE, START_LOADING, END_LOADING} from './types';
+import {AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_MESSAGE, SAVE_USER, GET_POSTS, GET_POST, SET_SEARCH_TEXT, REMOVE_AUTH_ERROR, TOGGLE_OFFLINE, REMOVE_SELECTED_RECIPE, START_LOADING, END_LOADING, REMOVE_UI_MESSAGE, UI_MESSAGE} from './types';
 var Dexie = require('dexie');
 
 const ROOT_URL = 'https://stirapi.herokuapp.com';
@@ -385,7 +385,19 @@ export function getIndividualPost(post_id, token){
   }
 }
 
+export function uiMessage(message) {
+  return {
+    type: UI_MESSAGE,
+    payload: message
+  }
+}
 
+export function removeUiMessage() {
+  return {
+    type: REMOVE_UI_MESSAGE,
+    payload: ''
+  }
+}
 
 export function authError(error) {
   return {
@@ -394,7 +406,7 @@ export function authError(error) {
   }
 }
 
-export function removeAuthError(error) {
+export function removeAuthError() {
   return {
     type: REMOVE_AUTH_ERROR,
     payload: ''
@@ -427,6 +439,32 @@ export function signoutUser(user_id) {
 
       db.delete();
     }
+  }
+}
+
+export function resetPassword(email, oldPassword, newPassword) {
+  return function(dispatch) {
+    axios.post(`${ROOT_URL}/resetPassword`, { email, oldPw: oldPassword, newPw: newPassword })
+    .then( (response) => {
+      console.log('data from request: ' , response.data);
+      if (response.data.success) {
+        dispatch(endLoading());
+        dispatch(uiMessage('Your password has been reset successfully.'));
+        browserHistory.push('/profile');
+        console.log('SUCCESS');
+      } else if (response.data.error) {
+        dispatch(authError('Incorrect Password.'));
+      }
+    } )
+  }
+}
+
+export function forgottenPassword(email) {
+  return function(dispatch) {
+    axios.post(`${ROOT_URL}/forgottenPassword`, {email})
+    .then( (response) => {
+      console.log('response from forgotten password', response);
+    } )
   }
 }
 

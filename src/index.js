@@ -9,6 +9,9 @@ var Dexie = require('dexie');
 import App from './components/app';
 import Signin from './components/auth/signin';
 import Signup from './components/auth/signup';
+import ForgottenPassword from './components/auth/ForgottenPassword';
+import Profile from './components/Profile';
+import ResetPassword from './components/ResetPassword';
 import createPosts from './components/posts/createPosts';
 import viewPosts from './components/posts/viewPosts';
 import viewPostDetail from './components/posts/viewPostDetail';
@@ -33,7 +36,7 @@ if (window.indexedDB) {
   // db.open().catch(function(error) {
   //   alert('Uh oh : ' + error);
   // });
-  
+
   db.users
     .toArray()
     .then( (doc) => {
@@ -68,6 +71,9 @@ ReactDOM.render(
         <Route path='posts/create' component={RequireAuth(createPosts)} />
         <Route path='posts/view' component={RequireAuth(viewPosts)} />
         <Route path='posts/view/:post_id' component={RequireAuth(viewPostDetail)} />
+        <Route path='profile' component={RequireAuth(Profile)} />
+        <Route path='reset' component={RequireAuth(ResetPassword)} />
+        <Route path='forgottenPassword' component={ForgottenPassword} />
       </Route>
 
     </Router>
