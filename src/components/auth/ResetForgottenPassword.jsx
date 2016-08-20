@@ -8,23 +8,26 @@ import { Link } from 'react-router';
 
 class ResetForgottenPassword extends Component {
 
-  componentWillMount() {
-    console.log(this.props.params);
-    const {token} = this.props.params;
-  }
-
-  handleFormSubmit({email}) {
+  handleFormSubmit({password, passwordConfirm}) {
 
     var errors = '';
 
-    if (email == undefined || email == '') {
-      errors = '<div>Please provide your email</div>';
+    if (password == undefined || password == '') {
+      errors = '<div>Please provide a password</div>';
+    }
+
+    if (passwordConfirm == undefined || passwordConfirm == '') {
+      errors = '<div>Please confirm the password</div>';
+    } else if(passwordConfirm !== password) {
+      errors = '<div>Passwords do not match!</div>';
     }
 
     if(errors == '') {
       //console.log('attempting forgottenPassword');
       this.props.startLoading();
-      this.props.forgottenPassword(email);
+      const {token} = this.props.params;
+      console.log(this.props);
+      this.props.resetForgottenPassword(token, password);
     }
     else {
       this.props.authError(errors);
@@ -108,6 +111,7 @@ class ResetForgottenPassword extends Component {
 
 function mapStateToProps(state) {
   return {
+    auth: state.auth,
     errorMessage: state.auth.error,
     loading: state.loading
     };
@@ -115,5 +119,5 @@ function mapStateToProps(state) {
 
 export default reduxForm({
   form: 'ForgottenPassword',
-  fields: ['email']
+  fields: ['password', 'passwordConfirm']
 }, mapStateToProps, actions)(ResetForgottenPassword);

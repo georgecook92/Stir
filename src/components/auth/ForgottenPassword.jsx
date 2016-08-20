@@ -8,6 +8,17 @@ import { Link } from 'react-router';
 
 class ForgottenPassword extends Component {
 
+  renderMessage() {
+    if (this.props.message) {
+      console.log(this.props.message);
+      return (
+        <div className='success-message'>
+            {this.props.message}
+        </div>
+      );
+    }
+  }
+
   handleFormSubmit({email}) {
 
     var errors = '';
@@ -83,6 +94,7 @@ class ForgottenPassword extends Component {
 
           <button action='submit'>Submit</button>
 
+          {this.renderMessage()}
 
           {this.renderAlert()}
 
@@ -98,7 +110,8 @@ class ForgottenPassword extends Component {
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
-    loading: state.loading
+    loading: state.loading,
+    message: state.auth.message
     };
 }
 

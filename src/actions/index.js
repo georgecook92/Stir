@@ -459,10 +459,24 @@ export function resetPassword(email, oldPassword, newPassword) {
   }
 }
 
+export function resetForgottenPassword(token, password) {
+  return function(dispatch) {
+    axios.post(`${ROOT_URL}/resetForgottenPassword`, {token, newPw: password})
+    .then( (response) => {
+      dispatch(endLoading());
+      dispatch(uiMessage('Password has been reset, you can log in.'));
+      browserHistory.push('/signin');
+      console.log('response', response);
+    })
+  }
+}
+
 export function forgottenPassword(email) {
   return function(dispatch) {
     axios.post(`${ROOT_URL}/forgotPassword`, {email})
     .then( (response) => {
+      dispatch(endLoading());
+      dispatch(uiMessage('An email has been sent to you. Check your spam just in case.'));
       console.log('response from forgotten password', response);
     } )
   }

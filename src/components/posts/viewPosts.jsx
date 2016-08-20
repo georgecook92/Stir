@@ -12,7 +12,12 @@ class ViewPosts extends Component {
   componentDidMount() {
     const {user_id,token} = this.props.auth;
     this.props.startLoading();
-    this.props.getUserPosts(user_id, token);
+    console.log('props auth', this.props.auth);
+    if (user_id) {
+      console.log('user_id didMount', user_id);
+      this.props.getUserPosts(user_id, token);
+    }
+
   }
 
   componentWillUnmount() {

@@ -33,11 +33,6 @@ if (window.indexedDB) {
     users: 'user_id, email, firstName, lastName, token'
   });
 
-  // Open the database
-  // db.open().catch(function(error) {
-  //   alert('Uh oh : ' + error);
-  // });
-
   db.users
     .toArray()
     .then( (doc) => {
@@ -52,7 +47,7 @@ if (window.indexedDB) {
           payload: doc[0]
         });
 
-        browserHistory.push('/posts/create');
+      //  browserHistory.push('/posts/view');
       }
     })
     .catch( (err) => {

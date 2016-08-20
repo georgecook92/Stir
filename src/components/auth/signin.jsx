@@ -8,6 +8,17 @@ import { Link } from 'react-router';
 
 class Signin extends Component {
 
+  renderMessage() {
+    if (this.props.message) {
+      console.log(this.props.message);
+      return (
+        <div className='success-message'>
+            {this.props.message}
+        </div>
+      );
+    }
+  }
+
   handleFormSubmit({email,password}) {
 
     //console.log(formProps);
@@ -35,6 +46,7 @@ class Signin extends Component {
 
   componentWillUnmount() {
     this.props.removeAuthError();
+    this.props.removeUiMessage();
   }
 
   renderAlert() {
@@ -99,6 +111,8 @@ class Signin extends Component {
 
           {this.renderAlert()}
 
+          {this.renderMessage()}
+
           </form>
         </div>
 
@@ -108,10 +122,13 @@ class Signin extends Component {
 }
 
 
+
+
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
-    loading: state.loading
+    loading: state.loading,
+    message: state.auth.message
     };
 }
 
