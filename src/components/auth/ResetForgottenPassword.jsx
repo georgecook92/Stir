@@ -8,10 +8,9 @@ import { Link } from 'react-router';
 
 class ResetForgottenPassword extends Component {
 
-  constructor() {
-    super();
+  componentWillMount() {
+    console.log(this.props.params);
     const {token} = this.props.params;
-    console.log('token',token);
   }
 
   handleFormSubmit({email}) {
