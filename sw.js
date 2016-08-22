@@ -10,11 +10,11 @@ var CACHE_ARRAY = [
   '/manifest.json'
 ];
 
-var CACHE_NAME = 'v6';
+var CACHE_NAME = 'v7';
 
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {
-    if (window.indexedDB) {
+
       var version = 10;
       var request = indexedDB.open(name, version);
       var db;
@@ -28,13 +28,13 @@ function openDatabase(name) {
         resolve(db);
       };
       request.onerror = reject;
-    }
+
   });
 }
 
 function databaseGet(type,db) {
   return new Promise(function(resolve, reject) {
-    if (window.indexedDB) {
+
       var transaction = db.transaction([type], 'readonly');
       var store = transaction.objectStore(type);
       var request = store.getAll();
@@ -43,13 +43,13 @@ function databaseGet(type,db) {
         resolve(result);
       };
       request.onerror = reject;
-    }
+
   });
 }
 
 function databaseGetById(type, id, db) {
   return new Promise(function(resolve, reject) {
-    if (window.indexedDB) {
+
       var transaction = db.transaction([type], 'readonly');
       var store = transaction.objectStore(type);
       var request = store.get(id);
@@ -58,7 +58,7 @@ function databaseGetById(type, id, db) {
         resolve(result);
       };
       request.onerror = reject;
-    }
+
   });
 }
 

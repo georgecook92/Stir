@@ -7,6 +7,9 @@ import SearchAPI from '../../../searchAPI';
 import {Grid, Cell, Card, CardTitle, CardActions, Button, Spinner} from 'react-mdl';
 import { browserHistory } from 'react-router';
 
+// using lodash for checking equality of objects
+import _isEqual from 'lodash.isequal';
+
 class ViewPosts extends Component {
 
   componentDidMount() {
@@ -18,6 +21,19 @@ class ViewPosts extends Component {
       this.props.getUserPosts(user_id, token);
     }
 
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(!_isEqual(nextProps.auth, this.props.auth)){
+        console.log('change would occur', nextProps.auth);
+        const {user_id,token} = nextProps.auth;
+        this.props.startLoading();
+
+        if (user_id) {
+          console.log('user_id didMount', user_id);
+          this.props.getUserPosts(user_id, token);
+        }
+    }
   }
 
   componentWillUnmount() {
@@ -114,6 +130,14 @@ class ViewPosts extends Component {
   }
 
   render() {
+
+    // const {user_id,token} = this.props.auth;
+    // this.props.startLoading();
+    // console.log('props auth', this.props.auth);
+    // if (user_id) {
+    //   console.log('user_id didMount', user_id);
+    //   this.props.getUserPosts(user_id, token);
+    // }
 
     return (
       <div>
