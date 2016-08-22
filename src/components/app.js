@@ -5,25 +5,7 @@ import {Layout, Snackbar} from 'react-mdl';
 
 export default class App extends Component {
 
-  constructor(props) {
-    super(props);
-    this.handleShowSnackbar = this.handleShowSnackbar.bind(this);
-    this.handleTimeoutSnackbar = this.handleTimeoutSnackbar.bind(this);
-    this.state = { isSnackbarActive: false };
-  }
-
-  handleShowSnackbar() {
-    this.setState({ isSnackbarActive: true });
-  }
-
-  handleTimeoutSnackbar() {
-    this.setState({ isSnackbarActive: false });
-  }
-
-  render() {
-
-    const {isSnackbarActive } = this.state;
-
+  componentDidMount() {
     if (navigator.serviceWorker) {
       if (!navigator.serviceWorker.controller) {
         // No service worker is controlling this page
@@ -45,6 +27,28 @@ export default class App extends Component {
     // Your SW caching content and intercepting page requests is active and working at this point
         }
     }
+  }
+
+  constructor(props) {
+    super(props);
+    this.handleShowSnackbar = this.handleShowSnackbar.bind(this);
+    this.handleTimeoutSnackbar = this.handleTimeoutSnackbar.bind(this);
+    this.state = { isSnackbarActive: false };
+  }
+
+  handleShowSnackbar() {
+    this.setState({ isSnackbarActive: true });
+  }
+
+  handleTimeoutSnackbar() {
+    this.setState({ isSnackbarActive: false });
+  }
+
+  render() {
+
+    const {isSnackbarActive } = this.state;
+
+
 
     return (
       <div>
