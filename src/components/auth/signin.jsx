@@ -8,6 +8,10 @@ import { Link } from 'react-router';
 
 class Signin extends Component {
 
+  componentDidMount() {
+    this.props.endLoading();
+  }
+
   renderMessage() {
     if (this.props.message) {
       console.log(this.props.message);

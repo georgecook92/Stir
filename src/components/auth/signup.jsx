@@ -5,6 +5,10 @@ import {Textfield, Spinner} from 'react-mdl';
 
 class Signup extends Component {
 
+  componentDidMount() {
+    this.props.endLoading();
+  }
+
   handleFormSubmit(formProps) {
 
     var errors = '';

@@ -26,6 +26,10 @@
   </head>
   <body>
     <div class="container"></div>
+    <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
   </body>
   <script src="/bundle.js"></script>
   <script>
@@ -39,6 +43,16 @@
           if (registration.active) {
                // Display your message
                console.log('ACTIVE');
+               (function() {
+                  'use strict';
+
+                  var snackbarContainer = document.querySelector('#demo-toast-example');
+
+                  'use strict';
+                  var data = {message: 'This web app in now available offline' };
+                  snackbarContainer.MaterialSnackbar.showSnackbar(data);
+
+                }());
           } else {
             //Message from OneSignal Support
             // Because we use skipWaiting() and clients.claim(), although the service worker does pass through the "installing" state on the way to becoming "active", it should never stay on this state and you should only ever see it "active". You shouldn't see "waiting" either. I'm not too sure on this part, but this should be the case.
