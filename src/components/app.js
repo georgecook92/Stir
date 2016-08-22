@@ -56,7 +56,8 @@ export default class App extends Component {
             {this.props.children}
             <Snackbar
               active={this.state.isSnackbarActive}
-              onTimeout={this.handleTimeoutSnackbar}>
+              onTimeout={this.handleTimeoutSnackbar}
+              timeout={6000}>
               The application now functions offline.
             </Snackbar>
           </main>
