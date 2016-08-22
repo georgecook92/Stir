@@ -7,10 +7,13 @@ var CACHE_ARRAY = [
   '/signin',
   '/signup',
   '/signout',
-  '/manifest.json'
+  '/manifest.json',
+  '/style/material.green-light_blue.min.css',
+  '/js/material.min.js',
+  '/style/style.css'
 ];
 
-var CACHE_NAME = 'v10';
+var CACHE_NAME = 'v11';
 
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {
