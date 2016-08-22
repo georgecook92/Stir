@@ -23,4 +23,5 @@ module.exports = {
     historyApiFallback: true,
     contentBase: './'
   }
+  devtool: process.env.NODE_ENV === 'production' ? undefined : 'cheap-module-eval-source-map'
 };

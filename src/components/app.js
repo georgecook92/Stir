@@ -6,6 +6,7 @@ import {Layout, Snackbar} from 'react-mdl';
 export default class App extends Component {
 
   componentDidMount() {
+
     if (navigator.serviceWorker) {
       if (!navigator.serviceWorker.controller) {
         // No service worker is controlling this page
@@ -46,10 +47,6 @@ export default class App extends Component {
 
   render() {
 
-    const {isSnackbarActive } = this.state;
-
-
-
     return (
       <div>
         <Layout fixedHeader>
@@ -58,7 +55,7 @@ export default class App extends Component {
           <main className="mdl-layout__content">
             {this.props.children}
             <Snackbar
-              active={isSnackbarActive}
+              active={this.state.isSnackbarActive}
               onTimeout={this.handleTimeoutSnackbar}>
               The application now functions offline.
             </Snackbar>
