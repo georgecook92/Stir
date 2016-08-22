@@ -29,15 +29,12 @@ export default class App extends Component {
         // No service worker is controlling this page
         // At some point in time in the future, depending on whether OneSignal is set to autoRegister or not, the service worker will be installed.
         // Wait for that point
-        navigator.serviceWorker.ready.then(function(registration) {
+        navigator.serviceWorker.ready.then( => (registration) {
             if (registration.active) {
                  // Display your message
                  console.log('ACTIVE');
-                 (function() {
                     'use strict';
                     this.handleShowSnackbar();
-
-                  }());
             } else {
               //Message from OneSignal Support
               // Because we use skipWaiting() and clients.claim(), although the service worker does pass through the "installing" state on the way to becoming "active", it should never stay on this state and you should only ever see it "active". You shouldn't see "waiting" either. I'm not too sure on this part, but this should be the case.
