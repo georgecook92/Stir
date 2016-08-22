@@ -13,7 +13,7 @@ var CACHE_ARRAY = [
   '/style/style.css'
 ];
 
-var CACHE_NAME = 'v11';
+var CACHE_NAME = 'v12';
 
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {
