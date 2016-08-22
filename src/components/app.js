@@ -29,7 +29,7 @@ export default class App extends Component {
         // No service worker is controlling this page
         // At some point in time in the future, depending on whether OneSignal is set to autoRegister or not, the service worker will be installed.
         // Wait for that point
-        navigator.serviceWorker.ready.then( => (registration) {
+        navigator.serviceWorker.ready.then( (registration) => {
             if (registration.active) {
                  // Display your message
                  console.log('ACTIVE');
