@@ -47,7 +47,15 @@ if (window.indexedDB) {
           payload: doc[0]
         });
 
-      //  browserHistory.push('/posts/view');
+        var path = window.location.pathname;
+
+        if (path === '/signin' || path === '/signup' || path === '/') {
+          browserHistory.push('/posts/view');
+        }
+
+        console.log(window.location.pathname);
+
+
       }
     })
     .catch( (err) => {

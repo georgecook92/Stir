@@ -380,7 +380,8 @@ export function getIndividualPost(post_id, token){
       headers: {authorisation: token}
     }).then( (response) => {
       console.log("resposne from indiv post", response);
-      dispatch( {type: GET_POST, payload: response.data} )
+      dispatch( {type: GET_POST, payload: response.data} );
+      dispatch(endLoading());
     } );
   }
 }

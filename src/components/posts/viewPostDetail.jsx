@@ -10,6 +10,7 @@ class ViewPostDetail extends Component {
     const {user_id,token} = this.props.auth;
     const {post_id} = this.props.params;
     this.props.getIndividualPost(post_id, token);
+    this.props.startLoading();
   }
 
   componentWillUnmount() {
@@ -61,7 +62,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     allPosts: state.posts.all,
-    selected: state.posts.selected
+    selected: state.posts.selected,
+    loading: state.loading
   }
 }
 
