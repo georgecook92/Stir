@@ -10,7 +10,7 @@ var CACHE_ARRAY = [
   '/manifest.json'
 ];
 
-var CACHE_NAME = 'v7';
+var CACHE_NAME = 'v10';
 
 function openDatabase(name) {
   return new Promise(function(resolve, reject) {
@@ -198,7 +198,7 @@ self.addEventListener( 'fetch', (event) => {
         if (response) {
           return response;
         } else {
-          return openDatabase( 'Posts' ).then( (db) => {
+          return openDatabase( 'Stir' ).then( (db) => {
             return databaseGetById('posts', param, db)
               .then( (post) => {
                 if (post) {
