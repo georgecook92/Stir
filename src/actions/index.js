@@ -477,8 +477,15 @@ export function forgottenPassword(email) {
     axios.post(`${ROOT_URL}/forgotPassword`, {email})
     .then( (response) => {
       dispatch(endLoading());
-      dispatch(uiMessage('An email has been sent to you. Check your spam just in case.'));
-      console.log('response from forgotten password', response);
+      console.log('response obj', response);
+
+      if (response.data.success) {
+        dispatch(uiMessage('An email has been sent to you. Check your spam just in case.'));
+      } else {
+        dispatch(authError('No user exists with that email'));
+      }
+
+
     } )
   }
 }
