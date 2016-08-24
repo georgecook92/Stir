@@ -4,6 +4,9 @@ import { Link } from 'react-router';
 import {Drawer, Navigation} from 'react-mdl';
 import * as actions from '../actions';
 
+
+//DRAWER COMPONENT
+//USES REACT MDL
 class HeaderMaterial extends Component {
 
   renderLinks() {
@@ -20,8 +23,8 @@ class HeaderMaterial extends Component {
       ];
     } else {
       return [
-        <Link className="mdl-navigation__link" to="/signin" key={1}>Signin</Link>,
-        <Link className="mdl-navigation__link" to="/signup" key={2}>Signup</Link>
+        <Link className="mdl-navigation__link" to="/login" key={1}>Login</Link>,
+        <Link className="mdl-navigation__link" to="/register" key={2}>Register</Link>
       ];
     }
 

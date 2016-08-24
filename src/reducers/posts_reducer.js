@@ -1,5 +1,7 @@
 import {GET_POSTS, GET_POST, TOGGLE_OFFLINE, REMOVE_SELECTED_RECIPE} from '../actions/types';
 
+//POSTS REDUCER
+
 export default function(state = [],action) {
   switch (action.type) {
 
@@ -17,7 +19,7 @@ export default function(state = [],action) {
       }
 
     case REMOVE_SELECTED_RECIPE:
-    console.log('state from reducer', state);
+    //console.log('state from reducer', state);
       return {
         ...state,
         selected: {}

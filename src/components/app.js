@@ -7,6 +7,8 @@ export default class App extends Component {
 
   componentDidMount() {
 
+    // shows a snackbar if the service worker is installed
+    // tells user the app is available offline
     if (navigator.serviceWorker) {
       if (!navigator.serviceWorker.controller) {
         // No service worker is controlling this page

@@ -1,5 +1,7 @@
 import {START_LOADING, END_LOADING} from '../actions/types';
 
+//LOADING REDUCER
+
 export default function(state = false,action) {
 
   switch (action.type) {

@@ -1,5 +1,6 @@
 import {AUTH_USER,UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE, SAVE_USER, GET_POSTS, REMOVE_AUTH_ERROR, UI_MESSAGE, REMOVE_UI_MESSAGE} from '../actions/types';
 
+//AUTH REDUCER
 
 export default function(state = {},action) {
   switch (action.type) {

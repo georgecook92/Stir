@@ -7,6 +7,7 @@ class SearchBar extends Component {
 
     var {searchText} = this.props;
 
+    //sends the search text value to the searchAPI filter on each change
     return (
           <input type='search' className='search-bar' ref='searchText' placeholder='Search Recipes' value={searchText} onChange={ () => {
               var searchText = this.refs.searchText.value;
@@ -23,4 +24,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(null, actions)(SearchBar);
+export default connect(mapStateToProps, actions)(SearchBar);

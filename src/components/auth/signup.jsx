@@ -9,6 +9,7 @@ class Signup extends Component {
     this.props.endLoading();
   }
 
+  //validation
   handleFormSubmit(formProps) {
 
     var errors = '';
@@ -36,7 +37,7 @@ class Signup extends Component {
       errors += '<div>Please provide your Last Name</div>';
     }
     if(errors == '') {
-      console.log('attempting signup');
+    //  console.log('attempting signup');
       this.props.startLoading();
       this.props.signupUser(formProps);
     }
@@ -81,7 +82,7 @@ class Signup extends Component {
       <div>
 
         <div className='signin-title-box'>
-          <h3 className='signin-title'>Sign Up To Stir.</h3>
+          <h3 className='signin-title'>Register For Stir.</h3>
         </div>
 
         <div className='signin-form-box'>
@@ -148,6 +149,8 @@ function mapStateToProps(state) {
   }
 }
 
+
+//redux form instead of connect
 export default reduxForm({
   form: 'signup',
   fields: ['email', 'password', 'passwordConfirm', 'firstName', 'lastName']

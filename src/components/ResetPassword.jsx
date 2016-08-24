@@ -6,9 +6,9 @@ import {Grid, Cell, Card, CardTitle, CardText, CardActions, Button, Textfield} f
 
 class ResetPassword extends Component {
 
+  //validation
   handleFormSubmit(formProps) {
     var errors = '';
-    console.log(formProps);
 
     if (formProps.oldPassword === undefined || formProps.oldPassword === '') {
       errors = '<div>Please Provide Your Old Password</div>'
@@ -25,7 +25,7 @@ class ResetPassword extends Component {
     }
 
     if(errors == '') {
-      console.log('attempting signup');
+      //console.log('attempting signup');
       this.props.startLoading();
       this.props.resetPassword(this.props.auth.email, formProps.oldPassword, formProps.newPassword);
     }
@@ -35,6 +35,7 @@ class ResetPassword extends Component {
 
 
   }
+
 
   renderSpinner() {
     if (this.props.loading) {

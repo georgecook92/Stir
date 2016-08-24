@@ -1,22 +1,34 @@
+//ajax request library
 import axios from 'axios';
+//{browserHistory} - ES6 Object destructuring
 import {browserHistory} from 'react-router';
 import {AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_MESSAGE, SAVE_USER, GET_POSTS, GET_POST, SET_SEARCH_TEXT, REMOVE_AUTH_ERROR, TOGGLE_OFFLINE, REMOVE_SELECTED_RECIPE, START_LOADING, END_LOADING, REMOVE_UI_MESSAGE, UI_MESSAGE} from './types';
+//IDB wrapper
 var Dexie = require('dexie');
 
+//API ROOT
 const ROOT_URL = 'https://stirapi.herokuapp.com';
 
+/*************************** THIS IS WHERE ALL OF THE ACTION CREATORS LIVE  ****************************/
+
+/**************** ACTION CREATORS TIE UP WITH A REDUCER (SEPERATE FOLDER) ********************   */
+
+//AC for toggle offline
 export var toggleOffline = (post_id,offlineStatus) => {
   return function(dispatch) {
     axios.put(`${ROOT_URL}/changeOfflineStatus`, {post_id,offlineStatus}, {
+      //auth jwt token for server
       headers: {
         authorisation: localStorage.getItem('token')
       }
     })
       .then( (response) => {
-        console.log('response from toggleOffline action ', response);
+        //console.log('response from toggleOffline action ', response);
 
         if (window.indexedDB) {
+          //new db
           var db = new Dexie('Stir');
+          //setting object stores
           db.version(1).stores({
             posts: '_id, title, user_id, text, offline',
             users: 'user_id, email, firstName, lastName, token'
@@ -30,7 +42,7 @@ export var toggleOffline = (post_id,offlineStatus) => {
               .equals(post_id)
               .delete();
             } ).then( function(doc) {
-              console.log('doc',doc);
+              //console.log('doc',doc);
             } );
 
             //else add post in to IDB as it is now available offline
@@ -48,10 +60,13 @@ export var toggleOffline = (post_id,offlineStatus) => {
             } );
           }
         }
+        //updating posts in redux
+        dispatch(endLoading());
         dispatch( {type: GET_POSTS, payload: response.data} );
       })
+      //if error occurs in promise - rejection of promise
       .catch( (err) => {
-        console.log('error from send posts action', err);
+        //console.log('error from send posts action', err);
         if (err.response.status === 503) {
           dispatch(authError('No internet connection :( '));
         } else {
@@ -61,6 +76,7 @@ export var toggleOffline = (post_id,offlineStatus) => {
   }
 }
 
+//action creator which sets the search text
 export var setSearchText = (searchText) => {
   return {
     type: 'SET_SEARCH_TEXT',
@@ -68,14 +84,14 @@ export var setSearchText = (searchText) => {
   }
 };
 
-//pass in object which contains the below properties
+
 export function signinUser(email,password) {
   return function(dispatch) {
     //submit email/password to server
     //{email,password} es6 shortcut
     axios.post(`${ROOT_URL}/signin`, { email,password })
       .then( response => {
-        console.log('data from request: ' , response.data);
+        //console.log('data from request: ' , response.data);
         //if request is good,
         //--we need to update state to indicate user is auth'd
         dispatch({type: AUTH_USER});
@@ -83,6 +99,8 @@ export function signinUser(email,password) {
           type: SAVE_USER,
           payload: response.data
         });
+
+        //save localStorage as well as IDB
 
         //--save JWT token
         localStorage.setItem('token', response.data.token);
@@ -117,6 +135,7 @@ export function signinUser(email,password) {
         }
 
         //--redirect to '/posts'
+        //stops spinner
         dispatch(endLoading());
         browserHistory.push('/posts/create');
 
@@ -124,7 +143,7 @@ export function signinUser(email,password) {
       .catch( (err) => {
         //if request is bad
         //--show error to user
-        console.log('error from sign in', err);
+      //  console.log('error from sign in', err);
         if (err.response.status === 503) {
           dispatch(endLoading());
           dispatch(authError('No internet connection :('));
@@ -132,7 +151,7 @@ export function signinUser(email,password) {
           dispatch(endLoading());
           dispatch(authError('Incorrect Login Information'));
         }
-          console.log(err.response.status);
+        //  console.log(err.response.status);
       } );
   }
 }
@@ -141,7 +160,12 @@ export function signupUser({email,password,firstName,lastName}) {
   return function(dispatch) {
     axios.post(`${ROOT_URL}/signup`, { email,password,firstName,lastName })
       .then( response => {
+        //auth user because they are redirected
         dispatch({type:AUTH_USER});
+
+        //formatting for how the redux store is set up
+        response.data.forename = response.data.firstName;
+        response.data.surname = response.data.lastName;
         dispatch({type: SAVE_USER, payload: response.data});
         console.log(response.data);
 
@@ -170,7 +194,7 @@ export function signupUser({email,password,firstName,lastName}) {
         browserHistory.push('/posts/create');
       })
       .catch( err => {
-        console.log('error from sign up', err);
+    //    console.log('error from sign up', err);
         if (err.response.status === 503) {
           dispatch(endLoading());
           dispatch(authError('No internet connection :('));
@@ -198,24 +222,30 @@ export function getUserPosts(user_id, token){
         alert('Uh oh : ' + error);
       });
 
+      /************** offline first method. Search IDB and send them to user - then do a network request   *************/
+
+      //this gets all of the posts into an array
       db.posts.toArray().then( (posts) =>  {
-        console.log('posts:', posts);
+      //  console.log('posts:', posts);
+        //if there are posts - send them to UI through redux
         if (posts.length > 0) {
           dispatch( {type: GET_POSTS, payload: posts} );
         }
       });
     }
 
+    //network request
     axios.get(`${ROOT_URL}/getPosts?user_id=${user_id}`, {
       headers: {
         authorisation: localStorage.getItem('token')
       }
     }).then( (response) => {
-      console.log('response from getPosts action ', response);
+    //  console.log('response from getPosts action ', response);
 
       dispatch( {type: GET_POSTS, payload: response.data} );
       dispatch(endLoading());
 
+      //adds any new offline posts to IDB
       response.data.forEach( (post) => {
 
         if (post.offline) {
@@ -242,7 +272,7 @@ export function getUserPosts(user_id, token){
 
     })
       .catch( (err) => {
-        console.log('error from get posts action', err);
+        //console.log('error from get posts action', err);
         if (err.response.status === 503) {
 
           dispatch(endLoading());
@@ -259,15 +289,16 @@ export function getUserPosts(user_id, token){
 
 export function deletePost(post_id) {
   return function(dispatch) {
-    console.log('post id',post_id);
+    //console.log('post id',post_id);
     axios.post(`${ROOT_URL}/deletePost`, {post_id: post_id} , {
       headers: {
         authorisation: localStorage.getItem('token')
       }
     })
     .then( (response) => {
-      console.log('response from delete post action',response);
+      //console.log('response from delete post action',response);
 
+      //checks IDB - if it needs to delete it - it will
       if (window.indexedDB) {
         var db = new Dexie('Stir');
         db.version(1).stores({
@@ -281,13 +312,13 @@ export function deletePost(post_id) {
           .equals(post_id)
           .delete();
         } ).then( function(doc) {
-          console.log('doc',doc);
+          //console.log('doc',doc);
         } );
       }
       browserHistory.push('/posts/view');
     })
     .catch( (err) => {
-      console.log('error from delete posts action', err);
+      //console.log('error from delete posts action', err);
       if (err.response.status === 503) {
         dispatch(authError('No internet connection :( '));
       } else {
@@ -300,9 +331,9 @@ export function deletePost(post_id) {
 export function sendPost({title,text, user_id}) {
   return function(dispatch) {
 
+    //this checks if the user is signed up to push
     var user_push_id = localStorage.getItem('userPushId');
 
-    //MIGHT NEED TO ERROR HANDLE LACK OF USER_ID in IDB
     return axios.post(`${ROOT_URL}/sendPost`, {
       title,
       user_id,
@@ -316,7 +347,7 @@ export function sendPost({title,text, user_id}) {
         }
       } )
       .then( response => {
-        console.log('response',response);
+        //console.log('response',response);
 
         dispatch(endLoading());
         browserHistory.push('/posts/view');
@@ -324,12 +355,14 @@ export function sendPost({title,text, user_id}) {
 
       })
       .catch( err => {
-        console.log('error from send posts action', err);
+        //console.log('error from send posts action', err);
         if (err.response.status === 503) {
 
           dispatch(endLoading());
           dispatch(authError('You\'re Offline! Please try again when you are online!'));
 
+
+          //BG SYNC - NOT WORKING
           // if ('serviceWorker' in navigator && 'SyncManager' in window) {
           //   navigator.serviceWorker.ready.then(function(reg) {
           //
@@ -379,13 +412,14 @@ export function getIndividualPost(post_id, token){
     axios.get(`${ROOT_URL}/viewPost/${post_id}`, {
       headers: {authorisation: token}
     }).then( (response) => {
-      console.log("resposne from indiv post", response);
+    //  console.log("resposne from indiv post", response);
       dispatch( {type: GET_POST, payload: response.data} );
       dispatch(endLoading());
     } );
   }
 }
 
+//sends a success ui message
 export function uiMessage(message) {
   return {
     type: UI_MESSAGE,
@@ -393,6 +427,7 @@ export function uiMessage(message) {
   }
 }
 
+//removes it
 export function removeUiMessage() {
   return {
     type: REMOVE_UI_MESSAGE,
@@ -400,6 +435,7 @@ export function removeUiMessage() {
   }
 }
 
+//sends an error to be displayed via redux
 export function authError(error) {
   return {
     type: AUTH_ERROR,
@@ -407,6 +443,7 @@ export function authError(error) {
   }
 }
 
+//removes error
 export function removeAuthError() {
   return {
     type: REMOVE_AUTH_ERROR,
@@ -414,12 +451,14 @@ export function removeAuthError() {
   }
 }
 
+//starts spinner
 export function startLoading() {
   return {
     type: START_LOADING
   }
 }
 
+//stops spinner
 export function endLoading() {
   return {
     type: END_LOADING
@@ -428,9 +467,15 @@ export function endLoading() {
 
 export function signoutUser(user_id) {
   return function(dispatch) {
+    //removes local storage
     localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
+    localStorage.removeItem('user_id');
     dispatch({type: UNAUTH_USER});
 
+    //removes IDB
     if (window.indexedDB) {
       var db = new Dexie('Stir');
       db.version(1).stores({
@@ -443,16 +488,17 @@ export function signoutUser(user_id) {
   }
 }
 
+//reset password if you are logged in currently
 export function resetPassword(email, oldPassword, newPassword) {
   return function(dispatch) {
     axios.post(`${ROOT_URL}/resetPassword`, { email, oldPw: oldPassword, newPw: newPassword })
     .then( (response) => {
-      console.log('data from request: ' , response.data);
+      //console.log('data from request: ' , response.data);
       if (response.data.success) {
         dispatch(endLoading());
         dispatch(uiMessage('Your password has been reset successfully.'));
         browserHistory.push('/profile');
-        console.log('SUCCESS');
+        //console.log('SUCCESS');
       } else if (response.data.error) {
         dispatch(authError('Incorrect Password.'));
       }
@@ -460,6 +506,7 @@ export function resetPassword(email, oldPassword, newPassword) {
   }
 }
 
+//resets the forgotten password with the new one given
 export function resetForgottenPassword(token, password) {
   return function(dispatch) {
     axios.post(`${ROOT_URL}/resetForgottenPassword`, {token, newPw: password})
@@ -467,17 +514,18 @@ export function resetForgottenPassword(token, password) {
       dispatch(endLoading());
       dispatch(uiMessage('Password has been reset, you can log in.'));
       browserHistory.push('/signin');
-      console.log('response', response);
+    //  console.log('response', response);
     })
   }
 }
 
+//sends request to route which sends an email from the server
 export function forgottenPassword(email) {
   return function(dispatch) {
     axios.post(`${ROOT_URL}/forgotPassword`, {email})
     .then( (response) => {
       dispatch(endLoading());
-      console.log('response obj', response);
+    //  console.log('response obj', response);
 
       if (response.data.success) {
         dispatch(uiMessage('An email has been sent to you. Check your spam just in case.'));
@@ -490,6 +538,7 @@ export function forgottenPassword(email) {
   }
 }
 
+//removes selected recipe from the redux store
 export function removeSelectedRecipe() {
   return {
     type: REMOVE_SELECTED_RECIPE

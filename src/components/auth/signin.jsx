@@ -14,7 +14,7 @@ class Signin extends Component {
 
   renderMessage() {
     if (this.props.message) {
-      console.log(this.props.message);
+      //console.log(this.props.message);
       return (
         <div className='success-message'>
             {this.props.message}
@@ -23,6 +23,7 @@ class Signin extends Component {
     }
   }
 
+  //validation
   handleFormSubmit({email,password}) {
 
     //console.log(formProps);
@@ -38,7 +39,7 @@ class Signin extends Component {
     }
 
     if(errors == '') {
-      console.log('attempting signin');
+      //console.log('attempting signin');
       this.props.startLoading();
       this.props.signinUser(email, password);
     }
@@ -48,6 +49,7 @@ class Signin extends Component {
 
   }
 
+  //stops lingering messages
   componentWillUnmount() {
     this.props.removeAuthError();
     this.props.removeUiMessage();
@@ -84,7 +86,7 @@ class Signin extends Component {
       <div>
 
         <div className='signin-title-box'>
-          <h3 className='signin-title'>Sign In To Stir.</h3>
+          <h3 className='signin-title'>Login To Stir.</h3>
         </div>
 
 
@@ -136,6 +138,8 @@ function mapStateToProps(state) {
     };
 }
 
+
+//uses redux form instead of connect
 export default reduxForm({
   form: 'signin',
   fields: ['email', 'password']

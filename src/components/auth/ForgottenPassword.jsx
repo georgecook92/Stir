@@ -4,10 +4,10 @@ import * as actions from '../../actions';
 import {Textfield, Spinner} from 'react-mdl';
 import { Link } from 'react-router';
 
-
-
+//javascript class - syntactic sugar - not an actual class
 class ForgottenPassword extends Component {
 
+  //renders message if one exists
   renderMessage() {
     if (this.props.message) {
       console.log(this.props.message);
@@ -19,6 +19,7 @@ class ForgottenPassword extends Component {
     }
   }
 
+  //validation
   handleFormSubmit({email}) {
 
     var errors = '';
@@ -27,6 +28,7 @@ class ForgottenPassword extends Component {
       errors = '<div>Please provide your email</div>';
     }
 
+    //only do ajax request if no errors
     if(errors == '') {
       //console.log('attempting forgottenPassword');
       this.props.startLoading();
@@ -38,10 +40,13 @@ class ForgottenPassword extends Component {
 
   }
 
+//removes messages - don't want them to show elsewhere
   componentWillUnmount() {
     this.props.removeAuthError();
+    this.props.removeUiMessage();
   }
 
+//renders alert if one exists
   renderAlert() {
     if (this.props.errorMessage) {
 
@@ -55,6 +60,7 @@ class ForgottenPassword extends Component {
     }
   }
 
+  //renders message if needed
   renderSpinner() {
     if (this.props.loading) {
       return (
@@ -65,6 +71,7 @@ class ForgottenPassword extends Component {
     }
   }
 
+  //general render method
   render() {
 
     const {handleSubmit, fields: {email,password} } = this.props;
@@ -81,9 +88,9 @@ class ForgottenPassword extends Component {
         <div className='signin-form-box'>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))} className='signinForm'>
 
-
-
             {this.renderSpinner()}
+
+            //react mdl component
             <Textfield
                 onChange={() => {}}
                 label="Email"
@@ -106,7 +113,7 @@ class ForgottenPassword extends Component {
   }
 }
 
-
+//maps state of application from redux to props
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
@@ -115,6 +122,7 @@ function mapStateToProps(state) {
     };
 }
 
+//using redux form
 export default reduxForm({
   form: 'ForgottenPassword',
   fields: ['email']

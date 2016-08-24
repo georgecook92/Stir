@@ -8,6 +8,7 @@ import { Link } from 'react-router';
 
 class ResetForgottenPassword extends Component {
 
+//validation
   handleFormSubmit({password, passwordConfirm}) {
 
     var errors = '';
@@ -35,6 +36,7 @@ class ResetForgottenPassword extends Component {
 
   }
 
+  //cleans up lingering messages on other pages
   componentWillUnmount() {
     this.props.removeAuthError();
   }
@@ -117,6 +119,7 @@ function mapStateToProps(state) {
     };
 }
 
+//using redux form - not connect
 export default reduxForm({
   form: 'ForgottenPassword',
   fields: ['password', 'passwordConfirm']

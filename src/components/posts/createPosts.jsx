@@ -9,6 +9,7 @@ var Dexie = require('dexie');
 
 class CreatePosts extends Component {
 
+  //validation
   handleFormSubmit({title,text}) {
     var errors = '';
 
@@ -107,6 +108,7 @@ function mapStateToProps(state) {
   }
 }
 
+//uses redux form
 export default reduxForm({
   form: 'post',
   fields: ['title','text']

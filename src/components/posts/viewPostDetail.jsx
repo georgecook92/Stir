@@ -5,7 +5,7 @@ import {Spinner} from 'react-mdl';
 
 class ViewPostDetail extends Component {
 
-
+  //get data to view the post
   componentDidMount() {
     const {user_id,token} = this.props.auth;
     const {post_id} = this.props.params;
@@ -13,10 +13,12 @@ class ViewPostDetail extends Component {
     this.props.startLoading();
   }
 
+  //removes selected recipe from redux
   componentWillUnmount() {
     this.props.removeSelectedRecipe();
   }
 
+  //deletes post
   onButtonClick(post_id) {
     this.props.deletePost(post_id);
   }
@@ -33,6 +35,7 @@ class ViewPostDetail extends Component {
 
   render() {
 
+      //renders spinner if post isn't loaded yet
       if (!this.props.selected) {
         return (
           <Spinner />

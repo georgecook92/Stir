@@ -24,9 +24,8 @@ import {AUTH_USER, SAVE_USER} from './actions/types';
 
 
 
-
+// checks if a user is logged in already
 if (window.indexedDB) {
-  console.log('IDB supported');
   var db = new Dexie('Stir');
   db.version(1).stores({
     posts: '_id, title, user_id, text, offline',
@@ -49,20 +48,40 @@ if (window.indexedDB) {
 
         var path = window.location.pathname;
 
+        //if path is either signin, signup or home - redirect because the user is already signed in
         if (path === '/signin' || path === '/signup' || path === '/') {
           browserHistory.push('/posts/view');
         }
 
-        console.log(window.location.pathname);
+      //  console.log(window.location.pathname);
 
 
       }
     })
     .catch( (err) => {
-      console.log(err);
+      //console.log(err);
     } );
 } else if(localStorage.getItem('token')) {
-  console.log('local storage');
+//  console.log('local storage');
+    store.dispatch( { type: AUTH_USER } );
+    var userObj = {};
+    userObj.email = localStorage.getItem('email');
+    userObj.token = localStorage.getItem('token');
+    userObj.user_id = localStorage.getItem('user_id');
+    userObj.forename = localStorage.getItem('firstName');
+    userObj.surname = localStorage.getItem('lastName');
+
+    store.dispatch({
+      type: SAVE_USER,
+      payload: userObj
+    });
+
+    var path = window.location.pathname;
+
+    //if path is either signin, signup or home - redirect because the user is already signed in
+    if (path === '/signin' || path === '/signup' || path === '/') {
+      browserHistory.push('/posts/view');
+    }
 }
 
 ReactDOM.render(
@@ -70,8 +89,8 @@ ReactDOM.render(
     <Router history={browserHistory}>
       <Route path='/' component={App}>
         <IndexRoute component={Welcome} />
-        <Route path='signin' component={Signin} />
-        <Route path='signup' component={Signup} />
+        <Route path='login' component={Signin} />
+        <Route path='register' component={Signup} />
         <Route path='posts/create' component={RequireAuth(createPosts)} />
         <Route path='posts/view' component={RequireAuth(viewPosts)} />
         <Route path='posts/view/:post_id' component={RequireAuth(viewPostDetail)} />

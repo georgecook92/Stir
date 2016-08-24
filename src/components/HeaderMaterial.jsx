@@ -4,6 +4,9 @@ import { Link } from 'react-router';
 import {Header, Navigation} from 'react-mdl';
 import * as actions from '../actions';
 
+
+//HEADER Component
+//uses react mdl
 class HeaderMaterial extends Component {
 
   renderLinks() {
@@ -18,8 +21,8 @@ class HeaderMaterial extends Component {
       ];
     } else {
       return [
-        <Link className="mdl-navigation__link" to="/signin" key={1}>Signin</Link>,
-        <Link className="mdl-navigation__link" to="/signup" key={2}>Signup</Link>,
+        <Link className="mdl-navigation__link" to="/register" key={1}>Register</Link>,
+        <Link className="mdl-navigation__link" to="/login" key={2}>Login</Link>,
       ];
     }
 

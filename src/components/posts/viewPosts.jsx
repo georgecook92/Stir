@@ -15,22 +15,27 @@ class ViewPosts extends Component {
   componentDidMount() {
     const {user_id,token} = this.props.auth;
     this.props.startLoading();
-    console.log('props auth', this.props.auth);
+    //console.log('props auth', this.props.auth);
+    //only do ajax request if user_id is present
     if (user_id) {
-      console.log('user_id didMount', user_id);
+      //console.log('user_id didMount', user_id);
       this.props.getUserPosts(user_id, token);
     }
 
   }
 
   componentWillReceiveProps(nextProps) {
+    //if the auth object changes - do the ajax request
+    // this solves a bug - constant ajax requests because each request was changing the state and causing a refresh.
+    //so constant ajax requests which blocks the UI
+    //comparison of objects stops the issue
     if(!_isEqual(nextProps.auth, this.props.auth)){
-        console.log('change would occur', nextProps.auth);
+      //  console.log('change would occur', nextProps.auth);
         const {user_id,token} = nextProps.auth;
         this.props.startLoading();
 
         if (user_id) {
-          console.log('user_id didMount', user_id);
+          //console.log('user_id didMount', user_id);
           this.props.getUserPosts(user_id, token);
         }
     }
@@ -41,10 +46,13 @@ class ViewPosts extends Component {
   }
 
   buttonClick(post_id,newOfflineStatus) {
-    console.log(newOfflineStatus);
-    this.props.toggleOffline(post_id,newOfflineStatus)
+    //console.log(newOfflineStatus);
+    this.props.toggleOffline(post_id,newOfflineStatus);
+    this.props.startLoading();
   }
 
+  //renders filtered posts
+  //helps with searching for posts
   renderPosts() {
     if (!this.props.allPosts) {
       return (
@@ -130,14 +138,6 @@ class ViewPosts extends Component {
   }
 
   render() {
-
-    // const {user_id,token} = this.props.auth;
-    // this.props.startLoading();
-    // console.log('props auth', this.props.auth);
-    // if (user_id) {
-    //   console.log('user_id didMount', user_id);
-    //   this.props.getUserPosts(user_id, token);
-    // }
 
     return (
       <div>

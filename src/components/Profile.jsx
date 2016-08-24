@@ -4,6 +4,8 @@ import * as actions from '../actions';
 import {Grid, Cell, Card, CardTitle, CardText, CardActions, Button, Spinner} from 'react-mdl';
 import { browserHistory } from 'react-router';
 
+
+//profile - uses redux state to get
 class Profile extends Component {
 
   componentWillUnmount() {
@@ -13,7 +15,7 @@ class Profile extends Component {
 
   renderMessage() {
     if (this.props.message) {
-      console.log(this.props.message);
+    //  console.log(this.props.message);
       return (
         <div className='success-message'>
             {this.props.message}

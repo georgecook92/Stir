@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import * as actions from '../../actions';
+
+/*****************  HIGHER ORDER COMPONENT TO REQUIRE AUTH  *******************/
 
 export default function(ComposedComponent) {
   class Authentication extends Component {
@@ -12,8 +15,9 @@ export default function(ComposedComponent) {
 
       const token = localStorage.getItem('token');
 
-      if (!this.props.authenticated && !token) { //token is in there for offline use - redux is not available offline
-        console.log('token', token);
+      //no token - redirect to signup page
+      if (!this.props.authenticated && !token) { //token is in there for offline use
+        //console.log('token', token);
         this.context.router.push('/signup');
       }
 
@@ -21,12 +25,12 @@ export default function(ComposedComponent) {
 
     componentWillUpdate(nextProps) {
       const token = localStorage.getItem('token');
-      if (!nextProps.authenticated && !token) { //token is in there for offline use - redux is not available offline
-        console.log('token', token);
+      if (!nextProps.authenticated && !token) { //token is in there for offline use
         this.context.router.push('/signup');
       }
     }
 
+    //returns the component which is passed in
     render() {
       return <ComposedComponent {...this.props} />
     }
@@ -36,5 +40,5 @@ export default function(ComposedComponent) {
     return {authenticated: state.auth.authenticated};
   }
 
-  return connect()(Authentication);
+  return connect(mapStateToProps, actions)(Authentication);
 }

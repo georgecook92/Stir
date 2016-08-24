@@ -7,6 +7,8 @@ import loadingReducer from '../reducers/loading_reducer';
 import thunk from 'redux-thunk';
 import reduxPromise from 'redux-promise';
 
+//CREATES THE REDUX STORE
+
 export var configure = (initialState = {}) => {
   var reducer = redux.combineReducers({
     form: formReducer,

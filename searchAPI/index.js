@@ -1,3 +1,5 @@
+//filters the recipes
+
 module.exports = {
   filterRecipes: function (recipes, searchText) {
     var filteredRecipes = recipes;
