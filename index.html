@@ -77,7 +77,7 @@ OneSignal.push(function() {
       //   Or the user was subscribed -> unsubscribed -> subscribed
       OneSignal.getUserId( function(userId) {
         // Make a POST call to your server with the user ID
-        console.log('user_id:',userId);
+        //console.log('user_id:',userId);
         localStorage.setItem('userPushId', userId);
       });
     } else {

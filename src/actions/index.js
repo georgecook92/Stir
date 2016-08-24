@@ -503,6 +503,16 @@ export function resetPassword(email, oldPassword, newPassword) {
         dispatch(authError('Incorrect Password.'));
       }
     } )
+    .catch( (err) => {
+      //if request is bad
+      //--show error to user
+    //  console.log('error from sign in', err);
+      if (err.response.status === 503) {
+        dispatch(endLoading());
+        dispatch(authError('No internet connection :( . Try again later!'));
+      }
+      //  console.log(err.response.status);
+    } );
   }
 }
 
@@ -516,6 +526,16 @@ export function resetForgottenPassword(token, password) {
       browserHistory.push('/signin');
     //  console.log('response', response);
     })
+    .catch( (err) => {
+      //if request is bad
+      //--show error to user
+    //  console.log('error from sign in', err);
+      if (err.response.status === 503) {
+        dispatch(endLoading());
+        dispatch(authError('No internet connection :(. Try again later!'));
+      }
+      //  console.log(err.response.status);
+    } );
   }
 }
 
@@ -535,6 +555,16 @@ export function forgottenPassword(email) {
 
 
     } )
+    .catch( (err) => {
+      //if request is bad
+      //--show error to user
+    //  console.log('error from sign in', err);
+      if (err.response.status === 503) {
+        dispatch(endLoading());
+        dispatch(authError('No internet connection :(. Please try again later!'));
+      }
+      //  console.log(err.response.status);
+    } );
   }
 }
 

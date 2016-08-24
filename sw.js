@@ -10,7 +10,8 @@ var CACHE_ARRAY = [
   '/manifest.json',
   '/style/material.green-light_blue.min.css',
   '/js/material.min.js',
-  '/style/style.css'
+  '/style/style.css',
+  '/assets/profile-icon.png'
 ];
 
 var CACHE_NAME = 'v12';
@@ -27,7 +28,7 @@ function openDatabase(name) {
       };
       request.onsuccess = function(e) {
         db = e.target.result;
-        console.log('OPENED DATABASE');
+        //console.log('OPENED DATABASE');
         resolve(db);
       };
       request.onerror = reject;
@@ -72,16 +73,16 @@ function sendAllFromOutbox(posts) {
     body: JSON.stringify(posts)
   })
   .then( (response) => {
-    console.log('response from SW sendAllFromOutbox', response);
+  //  console.log('response from SW sendAllFromOutbox', response);
   } )
   .catch( (err) => {
-    console.log('error from SW sendAllFromOutbox',err);
+    //console.log('error from SW sendAllFromOutbox',err);
   } )
 }
 
 //install event
 self.addEventListener('install', (event) => {
-  console.log('install from SW');
+//  console.log('install from SW');
   event.waitUntil(
     caches.open(CACHE_NAME).then( (cache) => {
       cache.addAll(CACHE_ARRAY)
@@ -130,8 +131,11 @@ self.addEventListener( 'fetch', (event) => {
       event.request.url === 'https://stirapi.herokuapp.com/signup' ||
       event.request.url === 'https://stirapi.herokuapp.com/changeOfflineStatus' ||
       event.request.url === 'https://stirapi.herokuapp.com/deletePost' ||
+      event.request.url === 'https://stirapi.herokuapp.com/resetPassword' ||
+      event.request.url === 'https://stirapi.herokuapp.com/resetForgottenPassword' ||
+      event.request.url === 'https://stirapi.herokuapp.com/forgotPassword' ||
       event.request.url === 'https://stirapi.herokuapp.com/sendPost' ) {
-    console.log('Logged from sign in - SW');
+    //console.log('Logged from sign in - SW');
     event.respondWith(
 
       caches.match(event.request)
@@ -139,19 +143,19 @@ self.addEventListener( 'fetch', (event) => {
         //if response is truthy return it - else fetch the network
         //if error in network call the fallback
 
-        response ? console.log('returned from cache') : console.log('attempt to network');
+      //  response ? console.log('returned from cache') : console.log('attempt to network');
 
         if (response) {
-          console.log('response from cache: sw', response);
+        //  console.log('response from cache: sw', response);
           return response;
         } else {
           return fetch(event.request)
           .then( (response) => {
-            console.log('response from SW network: ', response);
+            //console.log('response from SW network: ', response);
             return response;
           } )
           .catch( () => {
-            console.log('network failed');
+          //  console.log('network failed');
             return new Response( { "error": "No Network" } , {
               ok: false,
               status: 503,
@@ -191,7 +195,7 @@ self.addEventListener( 'fetch', (event) => {
     var resObj = [{title:"Mac and cheese",_id:"579f6d34a1d8c41100ab70cc",offline:true,user_id:"579b4194cfe5401100c4d315",text:"Lots of cheese. Done."}];
     var resObj2 = [{title:"Offline Post 2",_id:"47999f6d34a1d8c41100bb70cc",offline:true,user_id:"579b4194cfe5401100c4d315",text:"Offline. Done. 2"}];
     var param = event.request.url.replace('https://stirapi.herokuapp.com/viewPost/','');
-    console.log('param from SW', param);
+  //  console.log('param from SW', param);
 
     var obj = { data: {} };
 
@@ -206,17 +210,17 @@ self.addEventListener( 'fetch', (event) => {
               .then( (post) => {
                 if (post) {
                   post = [post];
-                  console.log(post);
+                //  console.log(post);
                   return new Response( JSON.stringify(post), {
                     headers: {'Content-Type': 'application/json'}
                   } );
                 } else {
                   return fetch(event.request).then( (response) => {
-                    console.log('response came from new IDB else', response);
+                    //console.log('response came from new IDB else', response);
                     return response;
                   })
                   .catch( (err) => {
-                    console.log('err from IDB else', err);
+                    //console.log('err from IDB else', err);
                   } );
                 }
               } )
@@ -233,7 +237,7 @@ self.addEventListener( 'fetch', (event) => {
       fetch(event.request).then( (response) => {
         return response;
       } ).catch( (err) => {
-        console.log(err);
+        //console.log(err);
       } )
     );
   }
@@ -251,12 +255,12 @@ self.addEventListener( 'fetch', (event) => {
 self.addEventListener('sync', function(event) {
   if (event.tag == 'send_post') {
     //const URL
-    console.log('sync from SW - send post');
+    //console.log('sync from SW - send post');
 
     event.waitUntil(
       openDatabase('Outbox').then( (db) => {
         return databaseGet('posts', db).then( (posts) => {
-          console.log('result from get:',posts);
+          //console.log('result from get:',posts);
           return sendAllFromOutbox(posts)
         } )
       } )
