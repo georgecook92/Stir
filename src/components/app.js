@@ -17,6 +17,7 @@ export default class App extends Component {
         navigator.serviceWorker.ready.then( (registration) => {
             if (registration.active) {
                  // Display the message
+                 console.log('showing snackbar');
                   this.handleShowSnackbar();
             }
         });
