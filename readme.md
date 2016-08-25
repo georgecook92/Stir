@@ -19,4 +19,6 @@ This issue has been tracked on Github after a conversation with the support team
 
 Once this bug is fixed, it will make the platform much more stable and easy to set up. If this were a production app, I would remove the push notifications, and add them back in once it has been stabilised.
 
+Note, the developer tools can be a bit buggy - so if things are not behaving as expected, close your browser completely and start again. Any issues please contact me. 
+
 Please watch the video provided in the assets folder, this gives a demo of the app in use - with and without a network connection. You can control the network through the network tab, either making it offline or throttled. If the network is throttled on the View Posts page - you will notice that the offline posts are painted to the screen immediately, and once the request is successful, the network only posts are also displayed.
