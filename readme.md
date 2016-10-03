@@ -1,3 +1,5 @@
+Node API is available at https://github.com/georgecook92/StirAPI
+
 For local running - due to One Signal dependancy, the offline functionality does not work locally.
 
 npm install
