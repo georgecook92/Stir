@@ -36,7 +36,7 @@
     "jsdom": "^8.1.0",
     "lodash": "^3.10.1",
     "node-gcm": "^0.14.4",
-    "pouchdb": "^5.4.5",
+    "pouchdb": "^7.1.1",
     "react": "^0.14.3",
     "react-bootstrap-toggle": "^1.2.15",
     "react-dom": "^0.14.3",
