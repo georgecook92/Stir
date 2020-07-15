@@ -34,7 +34,7 @@
     "html-to-react": "^1.0.0",
     "jquery": "^2.2.4",
     "jsdom": "^8.1.0",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.19",
     "node-gcm": "^0.14.4",
     "pouchdb": "^5.4.5",
     "react": "^0.14.3",
